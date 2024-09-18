@@ -15,10 +15,8 @@
 | 第五章  | CUDA编程    |
 
 ## 环境安装
-### Node.js版本
-``` shell
-Node v20.11.1
-```
+### 安装Node.js
+官网：https://nodejs.org/en/download/package-manager
 
 ### 安装docsify
 ```shell
@@ -35,9 +33,9 @@ docsify serve ./docs
 - 
 
 ## TODO List
-- [ ] 构建docsify架构。
+- [ ] 搭建docsify格式。
 - [ ] 构建代码展示方式。
-- [ ] 
+- [ ] 撰写相关内容。
 
 ## Star History
 

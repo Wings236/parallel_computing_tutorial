@@ -1,7 +1,7 @@
-# parallel_computing_tutorial
+# 并行计算导论
 
-## 项目简介
-该项目为并行计算导论。对并行计算进行快速介绍原理及其使用方式，使其能够在特定领域进行快速使用。
+## 课程简介
+该课程为并行计算导论。对并行计算进行快速介绍原理及其使用方式，使其能够在特定领域进行快速使用。
 并行计算，可以一次执行多个指令，充分利用多个处理器以提高单位时间的计算速度。
 
 ## 内容规划
@@ -31,12 +31,13 @@ docsify serve ./docs
 
 ## 参考资料
 - [parallel-computing-tutorial](https://github.com/mit-han-lab/parallel-computing-tutorial)
+- 《GPU编程与优化——大众高性能计算》
 - 
 
 ## TODO List
-- [ ] 搭建docsify格式。
-- [ ] 构建代码展示方式。
-- [ ] 撰写相关内容。
+- [x] 搭建docsify展示。
+- [ ] 构建项目例子展示。
+- [ ] 设计导论内容，并准备相关材料。
 
 ## Star History
 

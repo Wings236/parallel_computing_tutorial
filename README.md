@@ -39,7 +39,6 @@ docsify serve ./docs
 ## 参考资料
 - [parallel-computing-tutorial](https://github.com/mit-han-lab/parallel-computing-tutorial)
 - 《GPU编程与优化——大众高性能计算》
-- 
 
 ## TODO List
 - [x] 搭建docsify展示。

@@ -51,11 +51,21 @@
               return pdf_renderer(code, lang, false);
             }
             return (base ? base : this.origin.code.apply(this, arguments));
-          }   
+          },
+        image: function(href, title, text) {
+                  var image_html = this.origin.image.apply(this, arguments)
+                  return '<figure>' + image_html + '<figcaption>' + text +
+                      '</figcaption></figure>'
+              }
         }
       }  
     }
   </script>
+<style>
+  figure {
+      text-align: center
+  }
+</style>
   <!-- Docsify v4 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
 <!-- Katex-->

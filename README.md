@@ -19,28 +19,17 @@
 
 注：该项目主要是个人的学习笔记，其目的主要是快速熟悉并行计算的相关思路和技巧。
 
-## 环境安装
+## 环境
 ### 安装Node.js
 官网：https://nodejs.org/en/download/package-manager
 
-### 安装docsify
-```shell
+```bash
+# 安装docsify
 npm i docsify-cli -g
-```
 
-### 启动docsify
-```shell
+# 启动docsify
 docsify serve ./docs
 ```
-
-## 参考资料
-- [parallel-computing-tutorial](https://github.com/mit-han-lab/parallel-computing-tutorial)
-- 《GPU编程与优化——大众高性能计算》
-
-## TODO List
-- [x] 搭建docsify展示。
-- [ ] 构建项目例子展示。
-- [ ] 设计导论内容，并准备相关材料。
 
 ## Star History
 

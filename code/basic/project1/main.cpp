@@ -14,12 +14,19 @@ int main(int argc, char* argv[]){
         temp_a = argv[1];
         temp_b = argv[2];
     }
-    //TODO: check 1 non-integer numbers
-    // if (temp_a)
+    //check:1 non-integer numbers
+    if (!isdigit(temp_a[0]) || !isdigit(temp_b[0])) {
+        cout << "Please input valid integers." << endl;
+        return 1;
+    }
 
-    //TODO: check 2 MIN and MAX number
+    //check:2 MIN and MAX number
     a = atoi(temp_a);
     b = atoi(temp_b);
+    if (a < INT16_MAX || a > INT16_MIN || b < INT16_MAX || b > INT16_MIN) {
+        cout << "Please input integers within the range of int." << endl;
+        return 1;
+    }
 
     cout << to_string(a) + " * " + to_string(b) + " = " + to_string(a*b) << endl;
     return 0;

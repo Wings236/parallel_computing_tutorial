@@ -37,7 +37,7 @@ int main(){
         // 输出文件
         ofstream matAFile("mat-A-" + to_string(matSize[i]) + ".txt");
         ofstream matBFile("mat-B-" + to_string(matSize[i]) + ".txt");
-        ofstream matResFile("mat-Res-" + to_string(matSize[i]) + ".txt");
+        ofstream matResFile("out" + to_string(matSize[i]) + ".txt");
 
         for (int j = 0; j < matSize[i]; j ++){
             for (int k = 0; k < matSize[i];k++){

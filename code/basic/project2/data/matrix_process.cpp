@@ -12,9 +12,9 @@ int main(){
     for (int i = 0; i < 3; i++){
         cout << matSize[i] << ":";
         // 构建矩阵数据  NxN * NxN -> NxN
-        double * matA = new double[(matSize[i]*matSize[i]) * sizeof(int)];
-        double * matB = new double[(matSize[i]*matSize[i]) * sizeof(int)];
-        double * matRes = new double[(matSize[i]*matSize[i]) * sizeof(int)];
+        double * matA = new double[matSize[i]*matSize[i]]();
+        double * matB = new double[matSize[i]*matSize[i]]();
+        double * matRes = new double[matSize[i]*matSize[i]]();
 
         auto start = chrono::high_resolution_clock::now();
         for (int j = 0; j < matSize[i]; j++){
@@ -29,7 +29,7 @@ int main(){
             for(int k = 0; k < matSize[i]; k++){
                 double temp = 0;
                 for (int l = 0; l < matSize[i]; l++){
-                    temp += matA[j*matSize[i] + l] * matA[l*matSize[i] + j];
+                    temp += matA[j*matSize[i] + l] * matB[l*matSize[i] + k];
                 }
                 matRes[j*matSize[i] + k] = temp;
             }
@@ -41,9 +41,9 @@ int main(){
 
         for (int j = 0; j < matSize[i]; j ++){
             for (int k = 0; k < matSize[i];k++){
-                matAFile << fixed << setprecision(6) << matA[j*matSize[i] + k] << " ";
-                matBFile << fixed << setprecision(6) << matB[j*matSize[i] + k] << " ";
-                matResFile << fixed << setprecision(6) << matRes[j*matSize[i] + k] << " ";
+                matAFile << fixed << setprecision(15) << matA[j*matSize[i] + k] << " ";
+                matBFile << fixed << setprecision(15) << matB[j*matSize[i] + k] << " ";
+                matResFile << fixed << setprecision(15) << matRes[j*matSize[i] + k] << " ";
             }
             matAFile << endl;
             matBFile << endl;

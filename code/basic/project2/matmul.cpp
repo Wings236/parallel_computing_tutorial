@@ -8,36 +8,37 @@ using namespace std;
 int main(){
     int matSize[] ={32, 256, 2048};
     for (int i = 0; i < 3; i++){
-        cout << "============ matSize:" << matSize[i] << " ============" << endl;
-        ifstream matAFile("./data/mat-A-" + to_string(matSize[i]) + ".txt");
-        ifstream matBFile("./data/mat-B-" + to_string(matSize[i]) + ".txt");
-        ifstream matResFile("./data/out" + to_string(matSize[i]) + ".txt");
+        int COL_NUM = matSize[i];
+        cout << "============= matSize:" << COL_NUM << " =============" << endl;
+        ifstream matAFile("./data/mat-A-" + to_string(COL_NUM) + ".txt");
+        ifstream matBFile("./data/mat-B-" + to_string(COL_NUM) + ".txt");
+        ifstream matResFile("./data/out" + to_string(COL_NUM) + ".txt");
 
-        float * matA = new float[matSize[i] * matSize[i]]();
-        float * matB = new float[matSize[i] * matSize[i]]();
-        float * matCal = new float[matSize[i] * matSize[i]]();
+        float * matA = new float[COL_NUM * COL_NUM]();
+        float * matB = new float[COL_NUM * COL_NUM]();
+        float * matCal = new float[COL_NUM * COL_NUM]();
 
-        double * dmatA = new double[matSize[i] * matSize[i]]();
-        double * dmatB = new double[matSize[i] * matSize[i]]();
-        double * dmatCal = new double[matSize[i] * matSize[i]]();
+        double * dmatA = new double[COL_NUM * COL_NUM]();
+        double * dmatB = new double[COL_NUM * COL_NUM]();
+        double * dmatCal = new double[COL_NUM * COL_NUM]();
 
-        double * matAns = new double[matSize[i] * matSize[i]]();
+        double * matAns = new double[COL_NUM * COL_NUM]();
 
         // read
-        for (int j = 0; j < matSize[i]; j++){
-            for (int k = 0; k < matSize[k]; k++){
+        for (int j = 0; j < COL_NUM; j++){
+            for (int k = 0; k < COL_NUM; k++){
                 double valA, valB, valRes;
                 matAFile >> valA;
                 matBFile >> valB;
                 matResFile >> valRes;
 
-                matA[j*matSize[i] + k] = static_cast<float>(valA);
-                matB[j*matSize[i] + k] = static_cast<float>(valB);
+                matA[j*COL_NUM + k] = static_cast<float>(valA);
+                matB[j*COL_NUM + k] = static_cast<float>(valB);
 
-                dmatA[j*matSize[i] + k] = valA;
-                dmatB[j*matSize[i] + k] = valB;
+                dmatA[j*COL_NUM + k] = valA;
+                dmatB[j*COL_NUM + k] = valB;
 
-                matAns[j*matSize[i] + k] = valRes;
+                matAns[j*COL_NUM + k] = valRes;
             }
         }
         // cout << matA[0] <<" "<< matA[1]<<" " << matA[2] <<endl;
@@ -47,40 +48,40 @@ int main(){
         cout << "[FLOAT]" <<endl;
         auto start = chrono::high_resolution_clock::now();
         double error = 0.0;
-        for(int j = 0; j < matSize[i]; j++){
-            for(int k = 0; k < matSize[i]; k++){
+        for(int j = 0; j < COL_NUM; j++){
+            for(int k = 0; k < COL_NUM; k++){
                 double temp = 0.0f;
-                for(int l = 0; l < matSize[i];l++){
-                    temp += matA[j*matSize[i] + l] * matB[l*matSize[i] + k];
+                for(int l = 0; l < COL_NUM; l++){
+                    temp += matA[j*COL_NUM + l] * matB[l*COL_NUM + k];
                 }
-                matCal[j*matSize[i] + k] = temp;
-                error += abs(matCal[j*matSize[i] + k] - matAns[j*matSize[i] + k]);
+                matCal[j*COL_NUM + k] = temp;
+                error += abs(matCal[j*COL_NUM + k] - matAns[j*COL_NUM + k]);
             }
         }
         auto end = std::chrono::high_resolution_clock::now();
         chrono::duration<double> duration = end - start;
         // error cal
-        cout << "绝对误差: " << fixed << setprecision(6) << error <<", 相对误差: " << error / (matSize[i] * matSize[i]) << endl;
+        cout << "绝对误差: " << fixed << setprecision(6) << error <<", 相对误差: " << error / (COL_NUM * COL_NUM) << endl;
         std::cout << "时间开销: " << fixed << setprecision(10) << duration.count() << " s\n";
 
         // double
         cout << "[DOUBLE]" <<endl;
         start = chrono::high_resolution_clock::now();
         error = 0.0;
-        for(int j = 0; j < matSize[i]; j++){
-            for(int k = 0; k < matSize[i]; k++){
+        for(int j = 0; j < COL_NUM; j++){
+            for(int k = 0; k < COL_NUM; k++){
                 double temp = 0.0f;
-                for(int l = 0; l < matSize[i];l++){
-                    temp += dmatA[j*matSize[i] + l] * dmatB[l*matSize[i] + k];
+                for(int l = 0; l < COL_NUM; l++){
+                    temp += dmatA[j*COL_NUM + l] * dmatB[l*COL_NUM + k];
                 }
-                dmatCal[j*matSize[i] + k] = temp;
-                error += abs(dmatCal[j*matSize[i] + k] - matAns[j*matSize[i] + k]);
+                dmatCal[j*COL_NUM + k] = temp;
+                error += abs(dmatCal[j*COL_NUM + k] - matAns[j*COL_NUM + k]);
             }
         }
         end = std::chrono::high_resolution_clock::now();
         duration = end - start;
         // error cal
-        cout << "绝对误差: " << fixed << setprecision(6) << error <<", 相对误差: " << error / (matSize[i] * matSize[i]) << endl;
+        cout << "绝对误差: " << setprecision(6) << error <<", 相对误差: " << error / (COL_NUM * COL_NUM) << endl;
         std::cout << "时间开销: " << fixed << setprecision(10) << duration.count() << " s\n";
 
         // close
@@ -93,6 +94,6 @@ int main(){
         matResFile.close();
 
     }
-    cout << "============ End ============" << endl;
+    cout << "=============== End ===============" << endl;
     return 0;
 }

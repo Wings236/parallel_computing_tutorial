@@ -1,0 +1,1 @@
+g++ main.cpp ./src/matmul.cpp -I./include -o matmul

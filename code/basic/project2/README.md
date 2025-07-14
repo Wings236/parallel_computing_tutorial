@@ -17,3 +17,9 @@ $./matmul mat-A-2048.txt mat-B-2048.txt out2048.txt
 2. Please implement the matrix multiplication in `float` and `double` separately, and compare the time consumed and the results. Give detailed analysis on the speed and accuracy.
 
 3. You can try to improve the speed, and introduce the methods in the report.
+
+# 报告(Report)
+
+## 主要工作
+1. 编写矩阵生成代码
+2. 基础矩阵计算代码

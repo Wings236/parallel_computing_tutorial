@@ -9,8 +9,7 @@ using namespace std;
 int main(){
     int matSize[] = {32, 256, 2048};
 
-    for (int i = 0; i < 3; i++){
-        int COL_NUM = matSize[i];
+    for (int COL_NUM: matSize){
         cout << COL_NUM << ":";
         // 构建矩阵数据  NxN * NxN -> NxN
         double * matA = new double[COL_NUM*COL_NUM]();
@@ -18,21 +17,21 @@ int main(){
         double * matRes = new double[COL_NUM*COL_NUM]();
 
         auto start = chrono::high_resolution_clock::now();
-        for (int j = 0; j < COL_NUM; j++){
-            for (int k = 0; k < COL_NUM; k++){
-                matA[j*COL_NUM + k] = double(rand())/RAND_MAX;
-                matB[j*COL_NUM + k] = double(rand())/RAND_MAX;
+        for (int i = 0; i < COL_NUM; i++){
+            for (int j = 0; j < COL_NUM; j++){
+                matA[i*COL_NUM + j] = double(rand())/RAND_MAX;
+                matB[i*COL_NUM + j] = double(rand())/RAND_MAX;
             }
         }
 
         // 计算结果
-        for (int j = 0; j < COL_NUM; j++){
-            for(int k = 0; k < COL_NUM; k++){
+        for (int i = 0; i < COL_NUM; i++){
+            for(int j = 0; j < COL_NUM; j++){
                 double temp = 0;
                 for (int l = 0; l < COL_NUM; l++){
-                    temp += matA[j*COL_NUM + l] * matB[l*COL_NUM + k];
+                    temp += matA[i*COL_NUM + l] * matB[l*COL_NUM + j];
                 }
-                matRes[j*COL_NUM + k] = temp;
+                matRes[i*COL_NUM + j] = temp;
             }
         }
         // 输出文件
@@ -40,11 +39,11 @@ int main(){
         ofstream matBFile("mat-B-" + to_string(COL_NUM) + ".txt");
         ofstream matResFile("out" + to_string(COL_NUM) + ".txt");
 
-        for (int j = 0; j < COL_NUM; j++){
-            for (int k = 0; k < COL_NUM; k++){
-                matAFile << fixed << setprecision(15) << matA[j*COL_NUM + k] << " ";
-                matBFile << fixed << setprecision(15) << matB[j*COL_NUM + k] << " ";
-                matResFile << fixed << setprecision(15) << matRes[j*COL_NUM + k] << " ";
+        for (int i = 0; i < COL_NUM; i++){
+            for (int j = 0; j < COL_NUM; j++){
+                matAFile << fixed << setprecision(15) << matA[i*COL_NUM + j] << " ";
+                matBFile << fixed << setprecision(15) << matB[i*COL_NUM + j] << " ";
+                matResFile << fixed << setprecision(15) << matRes[i*COL_NUM + j] << " ";
             }
             matAFile << endl;
             matBFile << endl;

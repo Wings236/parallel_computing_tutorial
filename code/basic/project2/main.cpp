@@ -9,8 +9,7 @@ int main(){
     int matSize[] = {32, 256, 2048};
     int testTime = 3; // 测试次数
     cout << "[提示] 重复计算" << testTime << "次求平均值" <<endl;
-    for (int i = 0; i < 3; i++){
-        int COL_NUM = matSize[i];
+    for (int COL_NUM : matSize){
         cout << "============= matSize:" << COL_NUM << " =============" << endl;
         ifstream matAFile("./data/mat-A-" + to_string(COL_NUM) + ".txt");
         ifstream matBFile("./data/mat-B-" + to_string(COL_NUM) + ".txt");
@@ -27,20 +26,20 @@ int main(){
         double * matAns = new double[COL_NUM * COL_NUM]();
 
         // read
-        for (int j = 0; j < COL_NUM; j++){
-            for (int k = 0; k < COL_NUM; k++){
+        for (int i = 0; i < COL_NUM; i++){
+            for (int j = 0; j < COL_NUM; j++){
                 double valA, valB, valRes;
                 matAFile >> valA;
                 matBFile >> valB;
                 matResFile >> valRes;
 
-                matA[j*COL_NUM + k] = static_cast<float>(valA);
-                matB[j*COL_NUM + k] = static_cast<float>(valB);
+                matA[i*COL_NUM + j] = static_cast<float>(valA);
+                matB[i*COL_NUM + j] = static_cast<float>(valB);
 
-                dmatA[j*COL_NUM + k] = valA;
-                dmatB[j*COL_NUM + k] = valB;
+                dmatA[i*COL_NUM + j] = valA;
+                dmatB[i*COL_NUM + j] = valB;
 
-                matAns[j*COL_NUM + k] = valRes;
+                matAns[i*COL_NUM + j] = valRes;
             }
         }
 
@@ -51,15 +50,15 @@ int main(){
         double relative_error = 0.0;
         auto start = chrono::high_resolution_clock::now();
         for (int t = 0; t < testTime; t++){
-            for(int j = 0; j < COL_NUM; j++){
-                for(int k = 0; k < COL_NUM; k++){
+            for(int i = 0; i < COL_NUM; i++){
+                for(int j = 0; j < COL_NUM; j++){
                     double temp_cal = 0.0;
-                    double temp_ans = matAns[j*COL_NUM + k];
+                    double temp_ans = matAns[i*COL_NUM + j];
                     double temp_error = 0.0;
-                    for(int l = 0; l < COL_NUM; l++){
-                        temp_cal += matA[j*COL_NUM + l] * matB[l*COL_NUM + k];
+                    for(int k = 0; k < COL_NUM; k++){
+                        temp_cal += matA[i*COL_NUM + k] * matB[k*COL_NUM + j];
                     }
-                    matCal[j*COL_NUM + k] = temp_cal;
+                    matCal[i*COL_NUM + j] = temp_cal;
                     temp_error = abs(temp_cal - temp_ans);
                     error += temp_error;
                     __FLT_MIN__;
@@ -79,15 +78,15 @@ int main(){
         error = 0.0;
         relative_error = 0.0;
         for (int t = 0; t < testTime; t++){
-            for(int j = 0; j < COL_NUM; j++){
-                for(int k = 0; k < COL_NUM; k++){
+            for(int i = 0; i < COL_NUM; i++){
+                for(int j = 0; j < COL_NUM; j++){
                     double temp_cal = 0.0;
-                    double temp_ans = matAns[j*COL_NUM + k];
+                    double temp_ans = matAns[i*COL_NUM + j];
                     double temp_error = 0.0;
-                    for(int l = 0; l < COL_NUM; l++){
-                        temp_cal += dmatA[j*COL_NUM + l] * dmatB[l*COL_NUM + k];
+                    for(int k = 0; k < COL_NUM; k++){
+                        temp_cal += dmatA[i*COL_NUM + k] * dmatB[k*COL_NUM + j];
                     }
-                    dmatCal[j*COL_NUM + k] = temp_cal;
+                    dmatCal[i*COL_NUM + j] = temp_cal;
                     temp_error = abs(temp_cal - temp_ans);
                     error += temp_error;
                     relative_error += (temp_ans < __DBL_MIN__)?0:(temp_error/abs(temp_ans));

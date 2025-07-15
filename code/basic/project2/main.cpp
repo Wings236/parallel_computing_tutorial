@@ -12,6 +12,7 @@ int main(){
     enum methods{
         NAVIE,
         UNROLLING,
+        REORDERING,
         ALL_METHODS
     };
 
@@ -52,49 +53,67 @@ int main(){
         }
 
         // normal calculate
-        // float
-        cout << "[FLOAT]" <<endl;
-        // TODO 在这里进行多种矩阵计算方式的评估
-        // for (int m = 0; m < methods::ALL_METHODS; m++){
-        //     switch (m)
-        //     {
-        //     case methods::NAVIE:
-        //         /* code */
-        //         break;
-        //     case methods::UNROLLING:
-        //         /* code */
-        //         break;
-        //     default:
-        //         break;
-        //     }
-        // }
-
         double error = 0.0;
         double relative_error = 0.0;
-        auto start = chrono::high_resolution_clock::now();
-        for (int t = 0; t < testTime; t++){
-            navie(matA, matB, matAns, matRes, COL_NUM, error, relative_error);
+        // float
+        cout << "[===FLOAT===]" <<endl;
+        for (int m = 0; m < methods::ALL_METHODS; m++){
+            error = 0.0;
+            relative_error = 0.0;
+            auto start = chrono::high_resolution_clock::now();
+            switch (m)
+            {
+                case methods::NAVIE:
+                    cout << "[NAVIE]" << endl;
+                    for (int t = 0; t < testTime; t++) naive(matA, matB, matAns, matRes, COL_NUM, error, relative_error);
+                    break;
+                case methods::UNROLLING:
+                    cout << "[UNROLLING]" << endl;
+                    for (int t = 0; t < testTime; t++) unrolling(matA, matB, matAns, matRes, COL_NUM, error, relative_error);
+                    break;
+                case methods::REORDERING:
+                    cout << "[REORDERING]" << endl;
+                    for (int t = 0; t < testTime; t++) reordering(matA, matB, matAns, matRes, COL_NUM, error, relative_error);
+                    break;
+                default:
+                    break;
+            }
+            auto end = std::chrono::high_resolution_clock::now();
+            chrono::duration<double> duration = end - start;
+            // error outout
+            cout << "绝对误差: " << fixed << setprecision(15) << error / (COL_NUM * COL_NUM * testTime) <<", 相对误差: " << relative_error/(COL_NUM * COL_NUM * testTime) << endl;
+            std::cout << "时间开销: " << fixed << setprecision(10) << duration.count()/testTime << " s\n";
         }
-        auto end = std::chrono::high_resolution_clock::now();
-        chrono::duration<double> duration = end - start;
-        // error outout
-        cout << "绝对误差: " << fixed << setprecision(15) << error / (COL_NUM * COL_NUM * testTime) <<", 相对误差: " << relative_error/(COL_NUM * COL_NUM * testTime) << endl;
-        std::cout << "时间开销: " << fixed << setprecision(10) << duration.count()/testTime << " s\n";
 
         // double
-        cout << "[DOUBLE]" <<endl;
-        start = chrono::high_resolution_clock::now();
-        error = 0.0;
-        relative_error = 0.0;
-        for (int t = 0; t < testTime; t++){
-            navie(dmatA, dmatB, matAns, dmatRes, COL_NUM, error, relative_error);
+        cout << endl << "[===DOUBLE===]" <<endl;
+        for (int m = 0; m < methods::ALL_METHODS; m++){
+            error = 0.0;
+            relative_error = 0.0;
+            auto start = chrono::high_resolution_clock::now();
+            switch (m)
+            {
+                case methods::NAVIE:
+                    cout << "[NAVIE]" << endl;
+                    for (int t = 0; t < testTime; t++) naive<double>(dmatA, dmatB, matAns, dmatRes, COL_NUM, error, relative_error);
+                    break;
+                case methods::UNROLLING:
+                    cout << "[UNROLLING]" << endl;
+                    for (int t = 0; t < testTime; t++) unrolling<double>(dmatA, dmatB, matAns, dmatRes, COL_NUM, error, relative_error);
+                    break;
+                case methods::REORDERING:
+                    cout << "[REORDERING]" << endl;
+                    for (int t = 0; t < testTime; t++) reordering(dmatA, dmatB, matAns, dmatRes, COL_NUM, error, relative_error);
+                    break;
+                default:
+                    break;
+            }
+            auto end = std::chrono::high_resolution_clock::now();
+            chrono::duration<double> duration = end - start;
+            // error outout
+            cout << "绝对误差: " << fixed << setprecision(15) << error / (COL_NUM * COL_NUM * testTime) <<", 相对误差: " << relative_error/(COL_NUM * COL_NUM * testTime) << endl;
+            std::cout << "时间开销: " << fixed << setprecision(10) << duration.count()/testTime << " s\n";
         }
-
-        end = std::chrono::high_resolution_clock::now();
-        duration = end - start;
-        // error cal
-        cout << "绝对误差: " << fixed << setprecision(15) << error/(COL_NUM * COL_NUM * testTime) <<", 相对误差: " << relative_error/(COL_NUM * COL_NUM * testTime) << endl;
-        std::cout << "时间开销: " << fixed << setprecision(10) << duration.count()/testTime << " s\n";
 
         // close
         delete [] matA;

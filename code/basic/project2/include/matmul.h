@@ -22,6 +22,7 @@ void naive(const T *matA, const T *matB, const double *matAns, T *matRes, int ma
     }
 }
 
+
 // unrolling
 template <typename T>
 void unrolling(const T *matA, const T *matB, const double *matAns, T *matRes, int matSize, double &error, double& relative_error){
@@ -87,6 +88,7 @@ void unrolling(const T *matA, const T *matB, const double *matAns, T *matRes, in
     }
 }
 
+
 // reordering
 template <typename T>
 void reordering(const T *matA, const T *matB, const double *matAns, T *matRes, int matSize, double &error, double& relative_error){
@@ -115,16 +117,179 @@ void reordering(const T *matA, const T *matB, const double *matAns, T *matRes, i
     }
 }
 
+
 // tiling
 template <typename T>
-void tiling(const T *matA, const T *matB, const double *matAns, T *matRes, int matSize, double &error, double& relative_error);
+void tiling(const T *matA, const T *matB, const double *matAns, T *matRes, int matSize, double &error, double& relative_error){
+    int BLK_SIZE = 8;
+
+    for(int i = 0; i < matSize; i++){
+        for(int j = 0; j < matSize; j++){
+            matRes[i*matSize + j] = 0.0;
+        }
+    }
+
+    for (int ti = 0; ti < matSize; ti+=BLK_SIZE){
+        for (int tj = 0; tj < matSize; tj+=BLK_SIZE){
+            for(int tk = 0; tk < matSize; tk += BLK_SIZE){
+                // tiling
+                for(int i = ti; i < ti + BLK_SIZE; i++){
+                    for(int j = tj; j < tj + BLK_SIZE; j++){
+                        for(int k = tk; k < tk + BLK_SIZE; k++){
+                            matRes[i*matSize + j] += matA[i*matSize + k] * matB[k*matSize + j];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    for(int i = 0; i < matSize; i++){
+        for(int j = 0; j < matSize; j++){
+            T temp_cal = matRes[i*matSize + j];
+            double temp_ans = matAns[i*matSize + j];
+            double temp_error = 0.0;
+            temp_error = abs(temp_cal - temp_ans);
+            error += temp_error;
+            relative_error += (temp_ans < __DBL_MIN__)?0:(temp_error/abs(temp_ans));
+        }
+    }
+}
+
+
+// tiling+reordering
+template <typename T>
+void tiling_reordering(const T *matA, const T *matB, const double *matAns, T *matRes, int matSize, double &error, double& relative_error){
+    int BLK_SIZE = 8;
+
+    for(int i = 0; i < matSize; i++){
+        for(int j = 0; j < matSize; j++){
+            matRes[i*matSize + j] = 0.0;
+        }
+    }
+
+    for (int ti = 0; ti < matSize; ti+=BLK_SIZE){
+        for (int tk = 0; tk < matSize; tk+=BLK_SIZE){
+            for(int tj = 0; tj < matSize; tj += BLK_SIZE){
+                // tiling
+                for(int i = ti; i < ti + BLK_SIZE; i++){
+                    for(int k = tk; k < tk + BLK_SIZE; k++){
+                        T Aik = matA[i*matSize + k];
+                        for(int j = tj; j < tj + BLK_SIZE; j++){
+                            matRes[i*matSize + j] += Aik * matB[k*matSize + j];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    for(int i = 0; i < matSize; i++){
+        for(int j = 0; j < matSize; j++){
+            T temp_cal = matRes[i*matSize + j];
+            double temp_ans = matAns[i*matSize + j];
+            double temp_error = 0.0;
+            temp_error = abs(temp_cal - temp_ans);
+            error += temp_error;
+            relative_error += (temp_ans < __DBL_MIN__)?0:(temp_error/abs(temp_ans));
+        }
+    }
+}
+
 
 // transpose
 template <typename T>
-void transpose(const T *matA, const T *matB, const double *matAns, T *matRes, int matSize, double &error, double& relative_error);
+void transpose(const T *matA, const T *trans_matB, const double *matAns, T *matRes, int matSize, double &error, double& relative_error){
+    for(int i = 0; i < matSize; i++){
+        for (int j = 0; j < matSize; j++){
+            T temp_cal = 0.0;
+            double temp_ans = matAns[i*matSize + j];
+            double temp_error = 0.0;
+            for(int k = 0; k < matSize; k++){
+                temp_cal += matA[i*matSize + k] * trans_matB[j*matSize + k];    // trans
+            }
+            matRes[i*matSize + j] = temp_cal;
+            temp_error = abs(temp_cal - temp_ans);
+            error += temp_error;
+            relative_error += (temp_ans < __DBL_MIN__)?0:(temp_error/abs(temp_ans));
+        }
+    }
+}
 
-// fast
+
+// fast = unrolling + tiling + transpose
 template <typename T>
-void fast(const T *matA, const T *matB, const double *matAns, T *matRes, int matSize, double &error, double& relative_error);
+void fast(const T *matA, const T *trans_matB, const double *matAns, T *matRes, int matSize, double &error, double& relative_error){
+    int BLK_NUM = 8;
+
+    // init
+    for(int i = 0; i < matSize; i++){
+        for(int j = 0; j < matSize; j++){
+            matRes[i*matSize + j] = 0.0;
+        }
+    }
+
+    // cal
+    for(int ti = 0; ti < matSize; ti += BLK_NUM){
+        for(int tj = 0; tj < matSize; tj += BLK_NUM){
+            for(int tk = 0; tk < matSize; tk += BLK_NUM){
+                // tiling
+                for(int i = ti; i < ti + BLK_NUM; i++){
+                    for (int j = tj; j < tj + BLK_NUM; j += 4){
+                        for ( int k = tk; k < tk + BLK_NUM; k += 4){
+                            // unrolling
+                            T temp_Cij0k = 0.0;
+                            T temp_Cij1k = 0.0;
+                            T temp_Cij2k = 0.0;
+                            T temp_Cij3k = 0.0;
+
+                            T temp_Aik0 = matA[i*matSize + k];
+                            T temp_Aik1 = matA[i*matSize + k+1];
+                            T temp_Aik2 = matA[i*matSize + k+2];
+                            T temp_Aik3 = matA[i*matSize + k+3];
+
+                            // transpose
+                            temp_Cij0k += temp_Aik0 * trans_matB[j*matSize + k];
+                            temp_Cij0k += temp_Aik1 * trans_matB[j*matSize + k+1];
+                            temp_Cij0k += temp_Aik2 * trans_matB[j*matSize + k+2];
+                            temp_Cij0k += temp_Aik3 * trans_matB[j*matSize + k+3];
+                            matRes[i*matSize + j] += temp_Cij0k;
+
+                            temp_Cij1k += temp_Aik0 * trans_matB[(j+1)*matSize + k];
+                            temp_Cij1k += temp_Aik1 * trans_matB[(j+1)*matSize + k+1];
+                            temp_Cij1k += temp_Aik2 * trans_matB[(j+1)*matSize + k+2];
+                            temp_Cij1k += temp_Aik3 * trans_matB[(j+1)*matSize + k+3];
+                            matRes[i*matSize + j+1] += temp_Cij1k;
+
+                            temp_Cij2k += temp_Aik0 * trans_matB[(j+2)*matSize + k];
+                            temp_Cij2k += temp_Aik1 * trans_matB[(j+2)*matSize + k+1];
+                            temp_Cij2k += temp_Aik2 * trans_matB[(j+2)*matSize + k+2];
+                            temp_Cij2k += temp_Aik3 * trans_matB[(j+2)*matSize + k+3];
+                            matRes[i*matSize + j+2] += temp_Cij2k;
+
+                            temp_Cij3k += temp_Aik0 * trans_matB[(j+3)*matSize + k];
+                            temp_Cij3k += temp_Aik1 * trans_matB[(j+3)*matSize + k+1];
+                            temp_Cij3k += temp_Aik2 * trans_matB[(j+3)*matSize + k+2];
+                            temp_Cij3k += temp_Aik3 * trans_matB[(j+3)*matSize + k+3];
+                            matRes[i*matSize + j+3] += temp_Cij3k;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // error cal
+    for(int i = 0; i < matSize; i++){
+        for(int j = 0; j < matSize; j++){
+            T temp_cal = matRes[i*matSize + j];
+            double temp_ans = matAns[i*matSize + j];
+            double temp_error = 0.0;
+            temp_error = abs(temp_cal - temp_ans);
+            error += temp_error;
+            relative_error += (temp_ans < __DBL_MIN__)?0:(temp_error/abs(temp_ans));
+        }
+    }
+}
 
 #endif

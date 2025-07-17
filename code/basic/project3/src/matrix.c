@@ -1,4 +1,102 @@
 #include "matrix.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-createMatrix(struct Matrix A){
+int createMatrix(struct Matrix* Mat, int rows, int cols){
+    // 输入判断
+    if(rows <= 0 || cols <= 0) return -1;
+
+    // 创建矩阵
+    Mat->ROW_NUM = rows;
+    Mat->COL_NUM = cols;
+    Mat->data = (float*)malloc(rows * cols * sizeof(float));
+    if(!Mat->data) return -2;
+    return 0;
+}
+
+int deleteMatrix(struct Matrix* Mat){
+    Mat->ROW_NUM = 0;
+    Mat->COL_NUM = 0;
+    if(Mat->data){
+        free(Mat->data);
+        Mat->data = NULL;
+    }
+    return 0;
+}
+
+int copyMatrix(struct Matrix *destMat, const struct Matrix *srcMat){
+    if((destMat->ROW_NUM != srcMat->ROW_NUM) || (destMat->COL_NUM != srcMat->COL_NUM)) return -1;
+    int rows = destMat->ROW_NUM;
+    int cols = destMat->COL_NUM;
+
+    for(int i = 0; i < rows; i++){
+        for(int j = 0; j < cols; j++)
+        destMat->data[i*cols + j] = srcMat->data[i*cols + j];
+    }
+
+    return 0;
+}
+
+int addMatrix(struct Matrix *MatA, struct Matrix *MatB){
+    if((MatA->ROW_NUM != MatB->ROW_NUM) || (MatA->COL_NUM != MatB->COL_NUM)) return -1;
+    int rows = MatA->ROW_NUM;
+    int cols = MatA->COL_NUM;
+
+    for(int i = 0; i < rows; i++){
+        for(int j = 0; j < cols; j++)
+        MatA->data[i*cols + j] += MatB->data[i*cols + j];
+    }
+
+    return 0;
+}
+
+
+
+
+int matmulMatrix(const struct Matrix *MatA, const struct Matrix *MatB, struct Matrix *MatC){
+    // check
+    if(MatA->ROW_NUM != MatC->ROW_NUM || MatA->COL_NUM != MatB->ROW_NUM || MatB->COL_NUM != MatC->ROW_NUM) return -1;
+    int rowA = MatA->ROW_NUM;
+    int colA = MatA->COL_NUM;
+    int colB = MatB->COL_NUM;
+
+    // cal
+    for(int i = 0; i < rowA; i++){
+        for(int j = 0; j < colB; j++){
+            float temp = 0.0f;
+            for(int k = 0; k < colA; k++){
+                temp += MatA->data[i*colA + k] * MatB->data[k*colB + j];
+            }
+            MatC->data[i*colB + j] = temp;
+        }
+    }
+    return 0;
+}
+
+
+int setMatrixValue(struct Matrix *Mat, int row, int col, float value){
+    if(row > Mat->ROW_NUM || col > Mat->COL_NUM) return -1;
+    Mat->data[row*Mat->COL_NUM + col] = value;
+    return 0;
+}
+
+int displayMatrix(const struct Matrix *Mat){
+    if(!Mat->data) return -1;
+    int row = Mat->ROW_NUM;
+    int col = Mat->COL_NUM;
+
+    printf("[");
+    for(int i = 0; i < row; i++){
+        printf("[");
+        for(int j = 0; j < col; j++){
+            if(j != col-1 ) printf("%.4f, ", Mat->data[i*col + j]);
+            else printf("%.4f", Mat->data[i*col + j]);
+        }
+        if(i != row-1 ) printf("]\n");
+        else printf("]");
+    }
+    printf("]\n");
+
+    return 0;
 }

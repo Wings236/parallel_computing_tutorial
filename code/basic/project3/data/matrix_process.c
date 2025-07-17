@@ -6,6 +6,7 @@ int main(){
     // 随机数种子
     srand(time(NULL));
     int matSize[] = {32, 256, 2048};
+
     for(int i = 0; i < 3; i++){
         int MAT_SIZE = matSize[i];
         printf("矩阵大小: %d x %d\n", MAT_SIZE, MAT_SIZE);
@@ -38,15 +39,36 @@ int main(){
         }
 
         // 存入文件
-        FILE *matrixAFile = fopen("mat-A-32.txt", "w");
-        FILE *matrixBFile = fopen("mat-A-32.txt", "w");
-        FILE *matrixOutFile = fopen("mat-A-32.txt", "w");
+        // 创建动态文件名
+        char filenameA[50];  // 存储 mat-A 文件名
+        char filenameB[50];  // 存储 mat-B 文件名
+        char filenameOut[50]; // 存储输出文件名
+
+        // 使用 snprintf 安全地格式化文件名
+        snprintf(filenameA, sizeof(filenameA), "mat-A-%d.txt", MAT_SIZE);
+        snprintf(filenameB, sizeof(filenameB), "mat-B-%d.txt", MAT_SIZE);
+        snprintf(filenameOut, sizeof(filenameOut), "out%d.txt", MAT_SIZE);
+
+        FILE *matrixAFile = fopen(filenameA, "w");
+        FILE *matrixBFile = fopen(filenameB, "w");
+        FILE *matrixOutFile = fopen(filenameOut, "w");
 
         if(!matrixAFile || !matrixBFile || !matrixOutFile){
             perror("error: fail to create the file.");
             return 1;
         }
 
+        // write
+        for(int j = 0; j < MAT_SIZE; j++){
+            for(int k = 0; k < MAT_SIZE; k++){
+                fprintf(matrixAFile, "%.17g ", matA[j*MAT_SIZE + k]);
+                fprintf(matrixBFile, "%.17g ", matB[j*MAT_SIZE + k]);
+                fprintf(matrixOutFile, "%.17g ", matRes[j*MAT_SIZE + k]);
+            }
+            fprintf(matrixAFile, "\n");
+            fprintf(matrixBFile, "\n");
+            fprintf(matrixOutFile, "\n");
+        }
 
         free(matA);
         free(matB);
@@ -56,13 +78,5 @@ int main(){
         fclose(matrixBFile);
         fclose(matrixOutFile);
     }
-    // // 文件读写
-    // FILE *matrixFile = fopen("mat-A-32.txt", "w");
-    // if(!matrixFile){
-    //     perror("无法创建文件");
-    //     return 1;
-    // }
-
-    // size_t written = fprintf(matrixFile, "%.17g", rand1);
-    // fclose(matrixFile);
+    return 0;
 }

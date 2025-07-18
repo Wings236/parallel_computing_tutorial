@@ -22,82 +22,82 @@ int main(){
 
     int testTime = 3; // 测试次数
     cout << "[提示] 重复计算" << testTime << "次求平均值" <<endl;
-    for (size_t COL_NUM : matSize){
-        cout << "======================= matSize:" << COL_NUM << " =======================" << endl;
-        ifstream matAFile("./data/mat-A-" + to_string(COL_NUM) + ".txt");
-        ifstream matBFile("./data/mat-B-" + to_string(COL_NUM) + ".txt");
-        ifstream matResFile("./data/out" + to_string(COL_NUM) + ".txt");
+    for (size_t MAT_SIZE : matSize){
+        cout << "======================= matSize:" << MAT_SIZE << " =======================" << endl;
+        ifstream matAFile("./data/mat-A-" + to_string(MAT_SIZE) + ".txt");
+        ifstream matBFile("./data/mat-B-" + to_string(MAT_SIZE) + ".txt");
+        ifstream matResFile("./data/out" + to_string(MAT_SIZE) + ".txt");
 
-        float * matA = new float[COL_NUM * COL_NUM]();
-        float * matB = new float[COL_NUM * COL_NUM]();
-        float * trans_matB = new float[COL_NUM * COL_NUM]();
-        float * matRes = new float[COL_NUM * COL_NUM]();
+        float * matA = new float[MAT_SIZE * MAT_SIZE]();
+        float * matB = new float[MAT_SIZE * MAT_SIZE]();
+        float * trans_matB = new float[MAT_SIZE * MAT_SIZE]();
+        float * matRes = new float[MAT_SIZE * MAT_SIZE]();
 
-        double * dmatA = new double[COL_NUM * COL_NUM]();
-        double * dmatB = new double[COL_NUM * COL_NUM]();
-        double * trans_dmatB = new double[COL_NUM * COL_NUM]();
-        double * dmatRes = new double[COL_NUM * COL_NUM]();
+        double * dmatA = new double[MAT_SIZE * MAT_SIZE]();
+        double * dmatB = new double[MAT_SIZE * MAT_SIZE]();
+        double * trans_dmatB = new double[MAT_SIZE * MAT_SIZE]();
+        double * dmatRes = new double[MAT_SIZE * MAT_SIZE]();
 
-        double * matAns = new double[COL_NUM * COL_NUM]();
+        double * matAns = new double[MAT_SIZE * MAT_SIZE]();
 
         // read
-        for (size_t i = 0; i < COL_NUM; i++){
-            for (size_t j = 0; j < COL_NUM; j++){
+        for (size_t i = 0; i < MAT_SIZE; i++){
+            for (size_t j = 0; j < MAT_SIZE; j++){
                 double valA, valB, valRes;
                 matAFile >> valA;
                 matBFile >> valB;
                 matResFile >> valRes;
 
-                matA[i*COL_NUM + j] = static_cast<float>(valA);
-                matB[i*COL_NUM + j] = static_cast<float>(valB);
-                trans_matB[j*COL_NUM + i] = static_cast<float>(valB); // trans
+                matA[i*MAT_SIZE + j] = static_cast<float>(valA);
+                matB[i*MAT_SIZE + j] = static_cast<float>(valB);
+                trans_matB[j*MAT_SIZE + i] = static_cast<float>(valB); // trans
 
-                dmatA[i*COL_NUM + j] = valA;
-                dmatB[i*COL_NUM + j] = valB;
-                trans_dmatB[j*COL_NUM + i] = valB;  // trans
+                dmatA[i*MAT_SIZE + j] = valA;
+                dmatB[i*MAT_SIZE + j] = valB;
+                trans_dmatB[j*MAT_SIZE + i] = valB;  // trans
 
-                matAns[i*COL_NUM + j] = valRes;
+                matAns[i*MAT_SIZE + j] = valRes;
             }
         }
 
         // normal calculate
-        double error = 0.0;
-        double relative_error = 0.0;
+        double mean_abs_error;
+        double mean_rel_error;
         // float
         cout << "[===FLOAT===]" <<endl;
         for (int m = 0; m < methods::ALL_METHODS; m++){
-            error = 0.0;
-            relative_error = 0.0;
+            mean_abs_error = 0.0;
+            mean_rel_error = 0.0;
             auto start = chrono::high_resolution_clock::now();
             switch (m)
             {
                 case methods::NAVIE:
                     cout << "[NAVIE]" << endl;
-                    for (int t = 0; t < testTime; t++) naive(matA, matB, matAns, matRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) naive(matA, matB, matRes, MAT_SIZE);
                     break;
                 case methods::UNROLLING:
                     cout << "[UNROLLING]" << endl;
-                    for (int t = 0; t < testTime; t++) unrolling(matA, matB, matAns, matRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) unrolling(matA, matB, matRes, MAT_SIZE);
                     break;
                 case methods::REORDERING:
                     cout << "[REORDERING]" << endl;
-                    for (int t = 0; t < testTime; t++) reordering(matA, matB, matAns, matRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) reordering(matA, matB, matRes, MAT_SIZE);
                     break;
                 case methods::TILING:
                     cout << "[TILING]" << endl;
-                    for (int t = 0; t < testTime; t++) tiling(matA, matB, matAns, matRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) tiling(matA, matB, matRes, MAT_SIZE);
                     break;
                 case methods::TILING_REORDERING:
                     cout << "[TILING + REORDERING]" << endl;
-                    for (int t = 0; t < testTime; t++) tiling_reordering(matA, matB, matAns, matRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) tiling_reordering(matA, matB, matRes, MAT_SIZE);
                     break;
                 case methods::TRANSPOSE:
                     cout << "[TRANSPOSE]" << endl;
-                    for (int t = 0; t < testTime; t++) transpose(matA, trans_matB, matAns, matRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) transpose(matA, trans_matB, matRes, MAT_SIZE);
                     break;
                 case methods::FAST:
                     cout << "[UNROLLING + TILING + TRANSPOSE]" << endl;
-                    for (int t = 0; t < testTime; t++) fast(matA, trans_matB, matAns, matRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) fast(matA, trans_matB, matRes, MAT_SIZE);
                     break;
                 default:
                     break;
@@ -105,45 +105,46 @@ int main(){
             auto end = std::chrono::high_resolution_clock::now();
             chrono::duration<double> duration = end - start;
             // error outout
-            cout << "绝对误差: " << fixed << setprecision(15) << error / (COL_NUM * COL_NUM * testTime) <<", 相对误差: " << relative_error/(COL_NUM * COL_NUM * testTime) << endl;
+            checkMatrix(matAns, matRes, MAT_SIZE, mean_abs_error, mean_rel_error);
+            cout << "平均绝对误差: " << fixed << setprecision(15) << mean_abs_error <<", 平均相对误差: " << mean_rel_error << endl;
             std::cout << "时间开销: " << fixed << setprecision(10) << duration.count()/testTime << " s\n";
         }
 
         // double
         cout << endl << "[===DOUBLE===]" <<endl;
         for (int m = 0; m < methods::ALL_METHODS; m++){
-            error = 0.0;
-            relative_error = 0.0;
+            mean_abs_error = 0.0;
+            mean_rel_error = 0.0;
             auto start = chrono::high_resolution_clock::now();
             switch (m)
             {
                 case methods::NAVIE:
                     cout << "[NAVIE]" << endl;
-                    for (int t = 0; t < testTime; t++) naive<double>(dmatA, dmatB, matAns, dmatRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) naive<double>(dmatA, dmatB, dmatRes, MAT_SIZE);
                     break;
                 case methods::UNROLLING:
                     cout << "[UNROLLING]" << endl;
-                    for (int t = 0; t < testTime; t++) unrolling<double>(dmatA, dmatB, matAns, dmatRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) unrolling<double>(dmatA, dmatB, dmatRes, MAT_SIZE);
                     break;
                 case methods::REORDERING:
                     cout << "[REORDERING]" << endl;
-                    for (int t = 0; t < testTime; t++) reordering(dmatA, dmatB, matAns, dmatRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) reordering(dmatA, dmatB, dmatRes, MAT_SIZE);
                     break;
                 case methods::TILING:
                     cout << "[TILING]" << endl;
-                    for (int t = 0; t < testTime; t++) tiling(dmatA, dmatB, matAns, dmatRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) tiling(dmatA, dmatB, dmatRes, MAT_SIZE);
                     break;
                 case methods::TILING_REORDERING:
                     cout << "[TILING + REORDERING]" << endl;
-                    for (int t = 0; t < testTime; t++) tiling_reordering(dmatA, dmatB, matAns, dmatRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) tiling_reordering(dmatA, dmatB, dmatRes, MAT_SIZE);
                     break;
                 case methods::TRANSPOSE:
                     cout << "[TRANSPOSE]" << endl;
-                    for (int t = 0; t < testTime; t++) transpose(dmatA, trans_dmatB, matAns, dmatRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) transpose(dmatA, trans_dmatB, dmatRes, MAT_SIZE);
                     break;
                 case methods::FAST:
                     cout << "[UNROLLING + TILING + TRANSPOSE]" << endl;
-                    for (int t = 0; t < testTime; t++) fast(dmatA, trans_dmatB, matAns, dmatRes, COL_NUM, error, relative_error);
+                    for (int t = 0; t < testTime; t++) fast(dmatA, trans_dmatB, dmatRes, MAT_SIZE);
                     break;
                 default:
                     break;
@@ -151,7 +152,8 @@ int main(){
             auto end = std::chrono::high_resolution_clock::now();
             chrono::duration<double> duration = end - start;
             // error outout
-            cout << "绝对误差: " << fixed << setprecision(15) << error / (COL_NUM * COL_NUM * testTime) <<", 相对误差: " << relative_error/(COL_NUM * COL_NUM * testTime) << endl;
+            checkMatrix(matAns, dmatRes, MAT_SIZE, mean_abs_error, mean_rel_error);
+            cout << "平均绝对误差: " << fixed << setprecision(15) << mean_abs_error <<", 平均相对误差: " << mean_rel_error << endl;
             std::cout << "时间开销: " << fixed << setprecision(10) << duration.count()/testTime << " s\n";
         }
 

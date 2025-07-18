@@ -2,12 +2,12 @@
 #define MATRIX_H
 
 struct Matrix{
-    int ROW_NUM;
-    int COL_NUM;
+    size_t ROW_NUM;
+    size_t COL_NUM;
     float * data;
 } ;
 
-int createMatrix(struct Matrix *Mat, int rows, int cols);
+int createMatrix(struct Matrix *Mat, size_t rows, size_t cols);
 
 int deleteMatrix(struct Matrix *Mat);
 
@@ -17,7 +17,7 @@ int addMatrix(struct Matrix *MatA, struct Matrix *MatB);
 
 int matmulMatrix(const struct Matrix *MatA, const struct Matrix *MatB, struct Matrix *MatC);
 
-int setMatrixValue(struct Matrix *Mat, int row, int col, float value);
+int setMatrixValue(struct Matrix *Mat, size_t row, size_t col, float value);
 
 // display
 int displayMatrix(const struct Matrix *Mat);

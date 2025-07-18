@@ -1,25 +1,28 @@
 #ifndef MATRIX_H
 #define MATRIX_H
-
-struct Matrix{
+#include <stdio.h>
+typedef struct Matrix{
     size_t ROW_NUM;
     size_t COL_NUM;
     float * data;
-} ;
+}Matrix;
 
-int createMatrix(struct Matrix *Mat, size_t rows, size_t cols);
+int createMatrix(Matrix *Mat, size_t rows, size_t cols);
 
-int deleteMatrix(struct Matrix *Mat);
+int deleteMatrix(Matrix *Mat);
 
-int copyMatrix(struct Matrix *destMat, const struct Matrix *srcMat);
+int copyMatrix(Matrix *destMat, const Matrix *srcMat);
 
-int addMatrix(struct Matrix *MatA, struct Matrix *MatB);
+int addMatrix(Matrix *MatA, Matrix *MatB);
 
-int matmulMatrix(const struct Matrix *MatA, const struct Matrix *MatB, struct Matrix *MatC);
+int matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC);
 
-int setMatrixValue(struct Matrix *Mat, size_t row, size_t col, float value);
+int setMatrixValue(Matrix *Mat, size_t row, size_t col, float value);
 
 // display
-int displayMatrix(const struct Matrix *Mat);
+int displayMatrix(const Matrix *Mat);
+
+// check
+int checkMatrix(const Matrix *calMat, const Matrix *ansMat, double *abs_error, double *rel_error);
 
 #endif

@@ -78,13 +78,20 @@ int main(int argc, char* argv[]){
         fclose(matBFile);
         fclose(matOutFile);
 
+        struct timeval start, end;
+        double duration;
+
+        gettimeofday(&start, NULL);
         matmulMatrix(&A, &B, &C);
+        gettimeofday(&end, NULL);
+        duration = ((double)(end.tv_sec-start.tv_sec)*1000000 + (double)(end.tv_usec-start.tv_usec)) / 1000000;
 
         // 计算平均误差
         double abs_error, rel_error;
         checkMatrix(&C, &Ans, &abs_error, &rel_error);
 
         printf("绝对误差:%.6f, 相对误差:%.6f\n", abs_error, rel_error);
+        printf("计算时间:%lfs \n", duration);
 
     }
     else{

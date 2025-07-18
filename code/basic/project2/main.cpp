@@ -8,7 +8,7 @@
 using namespace std;
 
 int main(){
-    int matSize[] = {32, 256, 2048};
+    size_t matSize[] = {32, 256, 2048};
     enum methods{
         NAVIE,
         UNROLLING,
@@ -22,7 +22,7 @@ int main(){
 
     int testTime = 3; // 测试次数
     cout << "[提示] 重复计算" << testTime << "次求平均值" <<endl;
-    for (int COL_NUM : matSize){
+    for (size_t COL_NUM : matSize){
         cout << "======================= matSize:" << COL_NUM << " =======================" << endl;
         ifstream matAFile("./data/mat-A-" + to_string(COL_NUM) + ".txt");
         ifstream matBFile("./data/mat-B-" + to_string(COL_NUM) + ".txt");
@@ -41,8 +41,8 @@ int main(){
         double * matAns = new double[COL_NUM * COL_NUM]();
 
         // read
-        for (int i = 0; i < COL_NUM; i++){
-            for (int j = 0; j < COL_NUM; j++){
+        for (size_t i = 0; i < COL_NUM; i++){
+            for (size_t j = 0; j < COL_NUM; j++){
                 double valA, valB, valRes;
                 matAFile >> valA;
                 matBFile >> valB;

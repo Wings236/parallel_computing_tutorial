@@ -91,48 +91,48 @@ int proj2fastMatmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC){
     }
 
     int BLK_NUM = 16;
-    // unrolling + reordering + tiling
+    // unrolling + tiling
     for(size_t ti = 0; ti < rowA; ti += BLK_NUM){
-        for(size_t tk = 0; tk < colA; tk += BLK_NUM){
-            for(size_t tj = 0; tj < colB; tj += BLK_NUM){
+        for(size_t tj = 0; tj < colB; tj += BLK_NUM){
+            for(size_t tk = 0; tk < colA; tk += BLK_NUM){
                 // tiling
                 for(int i = ti; i < ti + BLK_NUM; i++){
-                    // reordering
-                    for(int k = tk; k < tk + BLK_NUM; k += 4){
+                    for(int j = tj; j < tj + BLK_NUM; j += 4){
                         // unrolling
-                        float Aik0 = MatA->data[i*colA + k];
-                        float Aik1 = MatA->data[i*colA + k+1];
-                        float Aik2 = MatA->data[i*colA + k+2];
-                        float Aik3 = MatA->data[i*colA + k+3];
-                        for(int j = tj; j < tj + BLK_NUM; j += 4){
-                            float blk_Cij0 = 0.0f;
-                            float blk_Cij1 = 0.0f;
-                            float blk_Cij2 = 0.0f;
-                            float blk_Cij3 = 0.0f;
+                        float blk_Cij0 = 0.0f;
+                        float blk_Cij1 = 0.0f;
+                        float blk_Cij2 = 0.0f;
+                        float blk_Cij3 = 0.0f;
+                        for(int k = tk; k < tk + BLK_NUM; k += 4){
+                            float Aik0 = MatA->data[i*colA + k];
+                            float Aik1 = MatA->data[i*colA + k+1];
+                            float Aik2 = MatA->data[i*colA + k+2];
+                            float Aik3 = MatA->data[i*colA + k+3];
+
                             blk_Cij0 += Aik0 * MatB->data[k*colB + j];
                             blk_Cij0 += Aik1 * MatB->data[(k+1)*colB + j];
                             blk_Cij0 += Aik2 * MatB->data[(k+2)*colB + j];
                             blk_Cij0 += Aik3 * MatB->data[(k+3)*colB + j];
-                            MatC->data[i*colB + j] += blk_Cij0;
 
                             blk_Cij1 += Aik0 * MatB->data[k*colB + j+1];
                             blk_Cij1 += Aik1 * MatB->data[(k+1)*colB + j+1];
                             blk_Cij1 += Aik2 * MatB->data[(k+2)*colB + j+1];
                             blk_Cij1 += Aik3 * MatB->data[(k+3)*colB + j+1];
-                            MatC->data[i*colB + j+1] += blk_Cij1;
 
                             blk_Cij2 += Aik0 * MatB->data[k*colB + j+2];
                             blk_Cij2 += Aik1 * MatB->data[(k+1)*colB + j+2];
                             blk_Cij2 += Aik2 * MatB->data[(k+2)*colB + j+2];
                             blk_Cij2 += Aik3 * MatB->data[(k+3)*colB + j+2];
-                            MatC->data[i*colB + j+2] += blk_Cij2;
 
                             blk_Cij3 += Aik0 * MatB->data[k*colB + j+3];
                             blk_Cij3 += Aik1 * MatB->data[(k+1)*colB + j+3];
                             blk_Cij3 += Aik2 * MatB->data[(k+2)*colB + j+3];
                             blk_Cij3 += Aik3 * MatB->data[(k+3)*colB + j+3];
-                            MatC->data[i*colB + j+3] += blk_Cij3;
                         }
+                        MatC->data[i*colB + j] += blk_Cij0;
+                        MatC->data[i*colB + j+1] += blk_Cij1;
+                        MatC->data[i*colB + j+2] += blk_Cij2;
+                        MatC->data[i*colB + j+3] += blk_Cij3;
                     }
                 }
             }

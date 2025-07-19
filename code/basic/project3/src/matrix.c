@@ -15,6 +15,7 @@ int createMatrix(Matrix* Mat, size_t rows, size_t cols){
     return 0;
 }
 
+
 int deleteMatrix(Matrix* Mat){
     Mat->ROW_NUM = 0;
     Mat->COL_NUM = 0;
@@ -24,6 +25,7 @@ int deleteMatrix(Matrix* Mat){
     }
     return 0;
 }
+
 
 int copyMatrix(Matrix *destMat, const Matrix *srcMat){
     if((destMat->ROW_NUM != srcMat->ROW_NUM) || (destMat->COL_NUM != srcMat->COL_NUM)) return -1;
@@ -38,6 +40,7 @@ int copyMatrix(Matrix *destMat, const Matrix *srcMat){
     return 0;
 }
 
+
 int addMatrix(Matrix *MatA, Matrix *MatB){
     if((MatA->ROW_NUM != MatB->ROW_NUM) || (MatA->COL_NUM != MatB->COL_NUM)) return -1;
     size_t rows = MatA->ROW_NUM;
@@ -50,8 +53,6 @@ int addMatrix(Matrix *MatA, Matrix *MatB){
 
     return 0;
 }
-
-
 
 
 int matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC){
@@ -75,11 +76,78 @@ int matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC){
 }
 
 
+int proj2fastMatmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC){
+    // check
+    if(MatA->ROW_NUM != MatC->ROW_NUM || MatA->COL_NUM != MatB->ROW_NUM || MatB->COL_NUM != MatC->ROW_NUM) return -1;
+    size_t rowA = MatA->ROW_NUM;
+    size_t colA = MatA->COL_NUM;
+    size_t colB = MatB->COL_NUM;
+
+    // init
+    for(size_t i = 0; i < rowA; i++){
+        for(size_t j = 0; j< colB; j++){
+            MatC->data[i*colB + j] = 0.0f;
+        }
+    }
+
+    int BLK_NUM = 16;
+    // unrolling + reordering + tiling
+    for(size_t ti = 0; ti < rowA; ti += BLK_NUM){
+        for(size_t tk = 0; tk < colA; tk += BLK_NUM){
+            for(size_t tj = 0; tj < colB; tj += BLK_NUM){
+                // tiling
+                for(int i = ti; i < ti + BLK_NUM; i++){
+                    // reordering
+                    for(int k = tk; k < tk + BLK_NUM; k += 4){
+                        // unrolling
+                        float Aik0 = MatA->data[i*colA + k];
+                        float Aik1 = MatA->data[i*colA + k+1];
+                        float Aik2 = MatA->data[i*colA + k+2];
+                        float Aik3 = MatA->data[i*colA + k+3];
+                        for(int j = tj; j < tj + BLK_NUM; j += 4){
+                            float blk_Cij0 = 0.0f;
+                            float blk_Cij1 = 0.0f;
+                            float blk_Cij2 = 0.0f;
+                            float blk_Cij3 = 0.0f;
+                            blk_Cij0 += Aik0 * MatB->data[k*colB + j];
+                            blk_Cij0 += Aik1 * MatB->data[(k+1)*colB + j];
+                            blk_Cij0 += Aik2 * MatB->data[(k+2)*colB + j];
+                            blk_Cij0 += Aik3 * MatB->data[(k+3)*colB + j];
+                            MatC->data[i*colB + j] += blk_Cij0;
+
+                            blk_Cij1 += Aik0 * MatB->data[k*colB + j+1];
+                            blk_Cij1 += Aik1 * MatB->data[(k+1)*colB + j+1];
+                            blk_Cij1 += Aik2 * MatB->data[(k+2)*colB + j+1];
+                            blk_Cij1 += Aik3 * MatB->data[(k+3)*colB + j+1];
+                            MatC->data[i*colB + j+1] += blk_Cij1;
+
+                            blk_Cij2 += Aik0 * MatB->data[k*colB + j+2];
+                            blk_Cij2 += Aik1 * MatB->data[(k+1)*colB + j+2];
+                            blk_Cij2 += Aik2 * MatB->data[(k+2)*colB + j+2];
+                            blk_Cij2 += Aik3 * MatB->data[(k+3)*colB + j+2];
+                            MatC->data[i*colB + j+2] += blk_Cij2;
+
+                            blk_Cij3 += Aik0 * MatB->data[k*colB + j+3];
+                            blk_Cij3 += Aik1 * MatB->data[(k+1)*colB + j+3];
+                            blk_Cij3 += Aik2 * MatB->data[(k+2)*colB + j+3];
+                            blk_Cij3 += Aik3 * MatB->data[(k+3)*colB + j+3];
+                            MatC->data[i*colB + j+3] += blk_Cij3;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+
 int setMatrixValue(Matrix *Mat, size_t row, size_t col, float value){
     if(row > Mat->ROW_NUM || col > Mat->COL_NUM) return -1;
     Mat->data[row*Mat->COL_NUM + col] = value;
     return 0;
 }
+
 
 int displayMatrix(const Matrix *Mat){
     if(!Mat->data) return -1;
@@ -101,6 +169,7 @@ int displayMatrix(const Matrix *Mat){
     return 0;
 }
 
+
 int checkMatrix(const Matrix *calMat, const Matrix *ansMat, double *abs_error, double *rel_error){
     if (calMat -> ROW_NUM != ansMat->ROW_NUM || calMat->COL_NUM != ansMat->COL_NUM) return -1;
     size_t rows = calMat->ROW_NUM;
@@ -119,5 +188,5 @@ int checkMatrix(const Matrix *calMat, const Matrix *ansMat, double *abs_error, d
 
     *abs_error = temp_abs_error/rows/cols;
     *rel_error = temp_rel_error/rows/cols;
-
+    return 0;
 }

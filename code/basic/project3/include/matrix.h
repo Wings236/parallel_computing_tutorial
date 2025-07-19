@@ -17,6 +17,8 @@ int addMatrix(Matrix *MatA, Matrix *MatB);
 
 int matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC);
 
+int proj2fastMatmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC);
+
 int setMatrixValue(Matrix *Mat, size_t row, size_t col, float value);
 
 // display

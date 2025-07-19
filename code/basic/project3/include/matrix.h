@@ -27,4 +27,11 @@ int displayMatrix(const Matrix *Mat);
 // check
 int checkMatrix(const Matrix *calMat, const Matrix *ansMat, double *abs_error, double *rel_error);
 
+// optimize tool for matrix
+int SIMD_matmulMatrix();
+
+int thread_matmulMatrix();
+
+int cuda_matmulMatrix();
+
 #endif

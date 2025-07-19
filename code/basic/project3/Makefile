@@ -1,5 +1,11 @@
 CXX = gcc
 TARGERT = matmul
+OBJ = main.c ./src/matrix.c
+INCLUDE = -I./include
 
-matmul: main.c ./src/matrix.c
-	gcc -o matmul main.c ./src/matrix.c -I./include
+$(TARGERT): $(OBJ)
+	$(CXX) -o $(TARGERT) $(OBJ) $(INCLUDE)
+
+.PHONY: clean
+clean:
+	rm -f matmul

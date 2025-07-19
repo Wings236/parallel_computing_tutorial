@@ -101,9 +101,11 @@ void tiling(const T *matA, const T *matB, T *matRes, size_t matSize){
                 // tiling
                 for(size_t i = ti; i < ti + BLK_SIZE; i++){
                     for(size_t j = tj; j < tj + BLK_SIZE; j++){
+                        T temp_Cik = 0.0;
                         for(size_t k = tk; k < tk + BLK_SIZE; k++){
-                            matRes[i*matSize + j] += matA[i*matSize + k] * matB[k*matSize + j];
+                            temp_Cik += matA[i*matSize + k] * matB[k*matSize + j];
                         }
+                        matRes[i*matSize + j] += temp_Cik;
                     }
                 }
             }
@@ -175,13 +177,12 @@ void fast(const T *matA, const T *trans_matB, T *matRes, size_t matSize){
                 // tiling
                 for(size_t i = ti; i < ti + BLK_NUM; i++){
                     for (size_t j = tj; j < tj + BLK_NUM; j += 4){
+                        // unrolling
+                        T temp_Cij0k = 0.0;
+                        T temp_Cij1k = 0.0;
+                        T temp_Cij2k = 0.0;
+                        T temp_Cij3k = 0.0;
                         for (size_t k = tk; k < tk + BLK_NUM; k += 4){
-                            // unrolling
-                            T temp_Cij0k = 0.0;
-                            T temp_Cij1k = 0.0;
-                            T temp_Cij2k = 0.0;
-                            T temp_Cij3k = 0.0;
-
                             T temp_Aik0 = matA[i*matSize + k];
                             T temp_Aik1 = matA[i*matSize + k+1];
                             T temp_Aik2 = matA[i*matSize + k+2];
@@ -192,26 +193,26 @@ void fast(const T *matA, const T *trans_matB, T *matRes, size_t matSize){
                             temp_Cij0k += temp_Aik1 * trans_matB[j*matSize + k+1];
                             temp_Cij0k += temp_Aik2 * trans_matB[j*matSize + k+2];
                             temp_Cij0k += temp_Aik3 * trans_matB[j*matSize + k+3];
-                            matRes[i*matSize + j] += temp_Cij0k;
 
                             temp_Cij1k += temp_Aik0 * trans_matB[(j+1)*matSize + k];
                             temp_Cij1k += temp_Aik1 * trans_matB[(j+1)*matSize + k+1];
                             temp_Cij1k += temp_Aik2 * trans_matB[(j+1)*matSize + k+2];
                             temp_Cij1k += temp_Aik3 * trans_matB[(j+1)*matSize + k+3];
-                            matRes[i*matSize + j+1] += temp_Cij1k;
 
                             temp_Cij2k += temp_Aik0 * trans_matB[(j+2)*matSize + k];
                             temp_Cij2k += temp_Aik1 * trans_matB[(j+2)*matSize + k+1];
                             temp_Cij2k += temp_Aik2 * trans_matB[(j+2)*matSize + k+2];
                             temp_Cij2k += temp_Aik3 * trans_matB[(j+2)*matSize + k+3];
-                            matRes[i*matSize + j+2] += temp_Cij2k;
 
                             temp_Cij3k += temp_Aik0 * trans_matB[(j+3)*matSize + k];
                             temp_Cij3k += temp_Aik1 * trans_matB[(j+3)*matSize + k+1];
                             temp_Cij3k += temp_Aik2 * trans_matB[(j+3)*matSize + k+2];
                             temp_Cij3k += temp_Aik3 * trans_matB[(j+3)*matSize + k+3];
-                            matRes[i*matSize + j+3] += temp_Cij3k;
                         }
+                        matRes[i*matSize + j] += temp_Cij0k;
+                        matRes[i*matSize + j+1] += temp_Cij1k;
+                        matRes[i*matSize + j+2] += temp_Cij2k;
+                        matRes[i*matSize + j+3] += temp_Cij3k;
                     }
                 }
             }

@@ -28,10 +28,12 @@ int displayMatrix(const Matrix *Mat);
 int checkMatrix(const Matrix *calMat, const Matrix *ansMat, double *abs_error, double *rel_error);
 
 // optimize tool for matrix
-int SIMD_matmulMatrix();
+void simd_mul_fp_128(const float *a, const float *b, float *c);
+void simd_mul_fp_256_AVX(const float *a, const float *b, float *c);
+int SIMD_matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC);
 
-int thread_matmulMatrix();
+int thread_matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC, int thread_num);
 
-int cuda_matmulMatrix();
+int cuda_matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC);
 
 #endif

@@ -38,6 +38,16 @@ int pthread_matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC, i
 int omp_matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC);
 
 // 3: CUDA
+// int cuda_matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC);
+// extern C
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int cuda_matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

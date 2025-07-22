@@ -133,7 +133,9 @@ int main(int argc, char* argv[]){
         gettimeofday(&start, NULL);
         // matmulMatrix(&A, &B, &C);
         // proj2fastMatmulMatrix(&A, &B, &C);
-        SIMD_matmulMatrix(&A, &B, &C);
+        // SIMD_matmulMatrix(&A, &B, &C);
+        // pthread_matmulMatrix(&A, &B, &C, 4);
+        omp_matmulMatrix(&A, &B, &C);
         gettimeofday(&end, NULL);
         duration = ((double)(end.tv_sec-start.tv_sec)*1000000 + (double)(end.tv_usec-start.tv_usec)) / 1000000;
 

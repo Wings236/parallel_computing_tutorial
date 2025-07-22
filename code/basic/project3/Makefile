@@ -1,7 +1,8 @@
 CXX = gcc
 TARGERT = matmul
-OBJ = main.c ./src/matrix.c ./src/SIMD_matrix.c
-CFLAG = 
+OBJ = main.c ./src/matrix.c ./src/SIMD_matrix.c ./src/thread_matrix.c
+# CFLAG = 
+CFLAG = -fopenmp
 # CFLAG = -O3
 # CFLAG = -O3 -mavx2
 INCLUDE = -I./include

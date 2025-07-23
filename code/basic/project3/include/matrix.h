@@ -31,6 +31,7 @@ int checkMatrix(const Matrix *calMat, const Matrix *ansMat, double *abs_error, d
 // 1: SIMD
 void simd_mul_fp_128(const float *a, const float *b, float *c);
 void simd_mul_fp_256_AVX(const float *a, const float *b, float *c);
+void simd_mul_fp_128_NEON(const float *a, const float *b, float *c);
 int SIMD_matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC);
 
 // 2: thread

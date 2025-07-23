@@ -65,11 +65,10 @@ int omp_matmulMatrix(const Matrix *MatA, const Matrix *MatB, Matrix *MatC){
         size_t colA = MatA->COL_NUM;
         size_t colB = MatB->COL_NUM;
 
-
+    #pragma omp parallel for
     for(size_t i = 0; i < rowA; i++){
         for(size_t j = 0; j < colB; j++){
             float temp = 0.0f;
-            #pragma omp parallel for
             for(size_t k = 0; k < colA; k++){
                 temp += MatA->data[i*MatA->COL_NUM + k] * MatB->data[k*MatB->COL_NUM + j];
             }

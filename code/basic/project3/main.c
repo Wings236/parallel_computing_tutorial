@@ -131,12 +131,14 @@ int main(int argc, char* argv[]){
         double duration;
 
         gettimeofday(&start, NULL);
-        // matmulMatrix(&A, &B, &C);
-        // proj2fastMatmulMatrix(&A, &B, &C);
-        // SIMD_matmulMatrix(&A, &B, &C);
-        // pthread_matmulMatrix(&A, &B, &C, 4);
-        // omp_matmulMatrix(&A, &B, &C);
-        cuda_matmulMatrix(&A, &B, &C);
+        for(int t = 0; t < 3; t++){
+            // matmulMatrix(&A, &B, &C);
+            // proj2fastMatmulMatrix(&A, &B, &C);
+            // SIMD_matmulMatrix(&A, &B, &C);
+            // pthread_matmulMatrix(&A, &B, &C, 4);
+            // omp_matmulMatrix(&A, &B, &C);
+            cuda_matmulMatrix(&A, &B, &C);
+        }
         gettimeofday(&end, NULL);
         duration = ((double)(end.tv_sec-start.tv_sec)*1000000 + (double)(end.tv_usec-start.tv_usec)) / 1000000;
 
@@ -145,7 +147,7 @@ int main(int argc, char* argv[]){
         checkMatrix(&C, &Ans, &abs_error, &rel_error);
 
         printf("平均绝对误差:%.6f, 平均相对误差:%.6f\n", abs_error, rel_error);
-        printf("计算时间:%lfs \n", duration);
+        printf("计算时间:%lfs \n", duration/3);
 
     }
     else{

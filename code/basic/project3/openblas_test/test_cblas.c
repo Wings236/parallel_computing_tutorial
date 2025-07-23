@@ -69,7 +69,8 @@ int main(int argc, char* argv[]){
         gettimeofday(&start, NULL);
         // matmulMatrix(&A, &B, &C);
         // 计算 C = alpha * A * B + beta * C
-        cblas_sgemm(
+        for(int t = 0; t < 3; t++){
+            cblas_sgemm(
             CblasRowMajor,
             CblasNoTrans,
             CblasNoTrans,
@@ -80,6 +81,7 @@ int main(int argc, char* argv[]){
             0,
             C.data, MAT_SIZE
         );
+        }
         gettimeofday(&end, NULL);
         duration = ((double)(end.tv_sec-start.tv_sec)*1000000 + (double)(end.tv_usec-start.tv_usec)) / 1000000;
 
@@ -88,7 +90,7 @@ int main(int argc, char* argv[]){
         checkMatrix(&C, &Ans, &abs_error, &rel_error);
 
         printf("平均绝对误差:%.6f, 平均相对误差:%.6f\n", abs_error, rel_error);
-        printf("计算时间:%lfs \n", duration);
+        printf("计算时间:%lfs \n", duration/3);
     }
     return 0;
 }

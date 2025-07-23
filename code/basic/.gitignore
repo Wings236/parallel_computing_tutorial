@@ -1,3 +1,11 @@
+# all
+mat*.txt
+out*.txt
+
 # output file
+# proj3
 matmul
 test_cblas
+
+# proj4
+build

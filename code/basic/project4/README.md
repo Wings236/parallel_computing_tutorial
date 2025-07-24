@@ -16,4 +16,20 @@ Please use C++ to implement a class.
 
 1. Test your program on X86 and ARM platforms, and describe the differences.
 
-1. Class `cv::Mat` is a good example for this project. https://docs.opencv.org/master/d3/d63/classcv_1_1Mat.html 
+1. Class `cv::Mat` is a good example for this project. https://docs.opencv.org/master/d3/d63/classcv_1_1Mat.html
+
+# 报告(Report)
+
+## 编译方法
+```bash
+mkdir build
+cd build
+cmake ..
+make
+./myMatrix
+```
+
+
+
+
+

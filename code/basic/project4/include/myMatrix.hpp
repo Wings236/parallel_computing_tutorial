@@ -47,35 +47,8 @@ public:
     myMatrix& operator+(const myMatrix& A);
     myMatrix& operator-(const myMatrix& A);
     myMatrix& operator*(const myMatrix& A);
+
+    // others
+    void display();
 };
-
-
-template <typename T>
-myMatrix<T>::myMatrix(size_t rows, size_t cols, size_t channels=1):rows(rows), cols(cols), channels(channels), pdata(nullptr), refcount(nullptr){
-    init(rows, cols, channels);
-}
-
-template <typename T>
-myMatrix<T>::myMatrix(size_t rows, size_t cols, size_t channels, const T* dataptr):rows(rows), cols(cols), channels(channels), pdata(nullptr), refcount(nullptr){
-    init(rows, cols, channels, dataptr);
-}
-
-template <typename T>
-myMatrix<T>::myMatrix(const myMatrix &A):rows(A.rows), cols(A.cols), channels(A.channels), pdata(A.pdata), refcount(A.refcount){
-    (*refcount)++;
-}
-
-template <typename T>
-myMatrix<T>::~myMatrix(){
-    release();
-}
-
-// operator
-
-
-
-
-
-
-
 #endif

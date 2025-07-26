@@ -22,7 +22,10 @@ myMatrix<T>::~myMatrix(){
 }
 
 // operator
+template <typename T>
+myMatrix<T>& myMatrix<T>::operator=(const myMatrix& A){
 
+}
 
 
 // others

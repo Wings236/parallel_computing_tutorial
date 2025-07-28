@@ -24,8 +24,46 @@ myMatrix<T>::~myMatrix(){
 // operator
 template <typename T>
 myMatrix<T>& myMatrix<T>::operator=(const myMatrix& A){
+    this->rows = A.rows;
+    this->cols = A.cols;
+    this->channels = A.channels;
+    this->pdata = A.pdata;
+    this->refcount = A.refcount;
+    *(this->refcount)++;
+    return *(this);
+}
+
+
+template <typename T>
+bool  myMatrix<T>::operator==(const myMatrix& A){
 
 }
+
+
+template <typename T>
+myMatrix<T>& myMatrix<T>::operator+(const myMatrix& A){
+
+}
+
+
+template <typename T>
+myMatrix<T>& myMatrix<T>::operator-(const myMatrix& A){
+    
+}
+
+
+template <typename T>
+myMatrix<T>& myMatrix<T>::operator*(const myMatrix& A){
+
+
+}
+
+
+
+
+
+
+
 
 
 // others

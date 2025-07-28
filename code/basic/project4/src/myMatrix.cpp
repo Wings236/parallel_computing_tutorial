@@ -36,35 +36,59 @@ myMatrix<T>& myMatrix<T>::operator=(const myMatrix& A){
 
 template <typename T>
 bool  myMatrix<T>::operator==(const myMatrix& A){
-
+    return (this->pdata == A.pdata);
 }
 
 
 template <typename T>
 myMatrix<T>& myMatrix<T>::operator+(const myMatrix& A){
-
+    if (this->rows == A.rows || this->cols == A.cols || this->channels == A.channels){
+        myMatrix *temp = new myMatrix(A.rows, A.cols, A.channels);
+        for(int i = 0; i < this->channels; i++){
+            for(int j = 0; j < this->rows; j++){
+                for(int k = 0; k < this->cols; k++){
+                    temp->pdata = this->pdata[i*(this->rows*this->cols) + j *(this->cols) + k] + A.pdata[i*(this->rows*this->cols) + j *(this->cols) + k];
+                }
+            }
+        }
+        return *(temp);
+    }
+    else {
+        // 什么也不做，直接返回原来的矩阵
+        return *(new myMatrix(0, 0, 0));
+    }
 }
 
 
 template <typename T>
 myMatrix<T>& myMatrix<T>::operator-(const myMatrix& A){
-    
+    if (this->rows == A.rows || this->cols == A.cols || this->channels == A.channels){
+        for(int i = 0; i < this->channels; i++){
+            for(int j = 0; j < this->rows; j++){
+                for(int k = 0; k < this->cols; k++){
+                    this->pdata[i*(this->rows*this->cols) + j *(this->cols) + k] -= A.pdata[i*(this->rows*this->cols) + j *(this->cols) + k];
+                }
+            }
+        }
+        return *(this);
+    }
+    else {
+        // 什么也不做，直接返回原来的矩阵
+        return *(this);
+    }
 }
 
 
 template <typename T>
 myMatrix<T>& myMatrix<T>::operator*(const myMatrix& A){
+    // 计算方式，同一通道的进行矩阵相乘
+    if(this->)
+
+
+
 
 
 }
-
-
-
-
-
-
-
-
 
 // others
 template <typename T>

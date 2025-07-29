@@ -63,14 +63,13 @@ public:
 
     // operator
     myMatrix& operator=(const myMatrix& A){
+        release();
         this->rows = A.rows;
         this->cols = A.cols;
         this->channels = A.channels;
         this->pdata = A.pdata;
         this->refcount = A.refcount;
-        std::cout << *(this->refcount) << std::endl;
-        *(this->refcount) += 1;
-        std::cout << *(this->refcount) << std::endl;
+        ++*(this->refcount);
         return *(this);
     }
 
@@ -83,12 +82,9 @@ public:
     myMatrix operator+(const myMatrix& A){
         if (this->rows == A.rows && this->cols == A.cols && this->channels == A.channels){
             myMatrix temp(A.rows, A.cols, A.channels);
-            for(int i = 0; i < this->channels; i++){
-                for(int j = 0; j < this->rows; j++){
-                    for(int k = 0; k < this->cols; k++){
-                        temp.pdata[i*(this->rows*this->cols) + j *(this->cols) + k] = this->pdata[i*(this->rows*this->cols) + j *(this->cols) + k] + A.pdata[i*(this->rows*this->cols) + j *(this->cols) + k];
-                    }
-                }
+            size_t total_num = A.rows * A.cols * A.channels;
+            for(size_t i = 0; i < total_num; i++){
+                temp.pdata[i] = this->pdata[i] + A.pdata[i];
             }
             return temp;
         }
@@ -102,12 +98,9 @@ public:
     myMatrix operator-(const myMatrix& A){
         if (this->rows == A.rows && this->cols == A.cols && this->channels == A.channels){
             myMatrix temp(A.rows, A.cols, A.channels);
-            for(int i = 0; i < this->channels; i++){
-                for(int j = 0; j < this->rows; j++){
-                    for(int k = 0; k < this->cols; k++){
-                        temp.pdata[i*(this->rows*this->cols) + j *(this->cols) + k] = this->pdata[i*(this->rows*this->cols) + j *(this->cols) + k] - A.pdata[i*(this->rows*this->cols) + j *(this->cols) + k];
-                    }
-                }
+            size_t total_num = A.rows * A.cols * A.channels;
+            for(size_t i = 0; i < total_num; i++){
+                temp.pdata[i] = this->pdata[i] - A.pdata[i];
             }
             return temp;
         }

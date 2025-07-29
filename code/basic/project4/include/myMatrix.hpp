@@ -31,6 +31,7 @@ private:
     void release(){
         if(--(*refcount) == 0){
             delete [] pdata;
+            pdata = nullptr;
             delete refcount;
         }
     }
@@ -67,7 +68,9 @@ public:
         this->channels = A.channels;
         this->pdata = A.pdata;
         this->refcount = A.refcount;
-        *(this->refcount)++;
+        std::cout << *(this->refcount) << std::endl;
+        *(this->refcount) += 1;
+        std::cout << *(this->refcount) << std::endl;
         return *(this);
     }
 
@@ -77,48 +80,48 @@ public:
     }
 
 
-    myMatrix& operator+(const myMatrix& A){
+    myMatrix operator+(const myMatrix& A){
         if (this->rows == A.rows && this->cols == A.cols && this->channels == A.channels){
-            myMatrix *temp = new myMatrix(A.rows, A.cols, A.channels);
+            myMatrix temp(A.rows, A.cols, A.channels);
             for(int i = 0; i < this->channels; i++){
                 for(int j = 0; j < this->rows; j++){
                     for(int k = 0; k < this->cols; k++){
-                        temp->pdata[i*(this->rows*this->cols) + j *(this->cols) + k] = this->pdata[i*(this->rows*this->cols) + j *(this->cols) + k] + A.pdata[i*(this->rows*this->cols) + j *(this->cols) + k];
+                        temp.pdata[i*(this->rows*this->cols) + j *(this->cols) + k] = this->pdata[i*(this->rows*this->cols) + j *(this->cols) + k] + A.pdata[i*(this->rows*this->cols) + j *(this->cols) + k];
                     }
                 }
             }
-            return *(temp);
+            return temp;
         }
         else {
             // 什么也不做，直接返回原来的矩阵
-            return *(new myMatrix(0, 0, 0));
+            return myMatrix(0, 0, 0);
         }
     }
 
 
-    myMatrix& operator-(const myMatrix& A){
+    myMatrix operator-(const myMatrix& A){
         if (this->rows == A.rows && this->cols == A.cols && this->channels == A.channels){
-            myMatrix *temp = new myMatrix(A.rows, A.cols, A.channels);
+            myMatrix temp(A.rows, A.cols, A.channels);
             for(int i = 0; i < this->channels; i++){
                 for(int j = 0; j < this->rows; j++){
                     for(int k = 0; k < this->cols; k++){
-                        temp->pdata[i*(this->rows*this->cols) + j *(this->cols) + k] = this->pdata[i*(this->rows*this->cols) + j *(this->cols) + k] - A.pdata[i*(this->rows*this->cols) + j *(this->cols) + k];
+                        temp.pdata[i*(this->rows*this->cols) + j *(this->cols) + k] = this->pdata[i*(this->rows*this->cols) + j *(this->cols) + k] - A.pdata[i*(this->rows*this->cols) + j *(this->cols) + k];
                     }
                 }
             }
-            return *(temp);
+            return temp;
         }
         else {
             // 什么也不做，直接返回原来的矩阵
-            return *(new myMatrix(0, 0, 0));
+            return myMatrix(0, 0, 0);
         }
     }
 
 
-    myMatrix& operator*(const myMatrix& A){
+    myMatrix operator*(const myMatrix& A){
         // 计算方式，同一通道的进行矩阵相乘 (c1, r1, l1) * (c2, r2, l2) -> c1 == c2 && l1 == r2
         if (this->channels == A.channels && this->cols == A.rows){
-            myMatrix *temp = new myMatrix(this->rows, A.cols, A.channels);
+            myMatrix temp(this->rows, A.cols, A.channels);
             for(int i = 0; i < this->channels; i++){
                 // 每一个通道进行矩阵相乘
                 for(int j = 0; j < this->rows; j++){
@@ -127,15 +130,15 @@ public:
                         for(int l = 0; l < this->cols; l++){
                             temp_value += this->pdata[i*(this->rows*this->cols) + j *(this->cols) + l] * A.pdata[i*(A.rows*A.cols) + l*(A.cols) + k];
                         }
-                        temp->pdata[i*(temp->rows*temp->cols) + j *(temp->cols) + k] = temp_value;
+                        temp.pdata[i*(temp.rows*temp.cols) + j *(temp.cols) + k] = temp_value;
                     }
                 }
             }
-            return *(temp);
+            return temp;
         }
         else {
             // 什么也不做，直接返回原来的矩阵
-            return *(new myMatrix(0, 0, 0));
+            return myMatrix(0, 0, 0);
         }
     }
 
@@ -150,6 +153,10 @@ public:
                 std::cout << "\n";
             }
         }
+    }
+
+    int get_ref(){
+        return *(refcount);
     }
 
 };

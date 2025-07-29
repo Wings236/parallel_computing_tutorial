@@ -165,4 +165,26 @@ public:
 
 };
 
+// ROI
+template <typename T>
+class myMatrixROI{
+private:
+    myMatrix<T> parent;
+    size_t start_row;
+    size_t start_col;
+    size_t start_channel;
+    size_t roi_row;
+    size_t roi_col;
+    size_t roi_channel;
+
+public:
+    myMatrixROI();
+    ~myMatrixROI();
+
+
+
+
+
+};
+
 #endif

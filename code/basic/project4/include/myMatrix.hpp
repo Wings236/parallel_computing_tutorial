@@ -2,6 +2,7 @@
 #define __MY_MATRIX__
 #include <iostream>
 #include <cstring>
+#include <math.h>
 
 template <typename T>
 class myMatrix
@@ -75,7 +76,17 @@ public:
 
 
     bool operator==(const myMatrix& A){
-        return (this->pdata == A.pdata);
+        if(this->pdata == A.pdata) return true;
+        else if(this->channels == A.channels && this->rows == A.rows && this->cols == this->cols){
+            size_t total_num = A.channels * A.rows * A.cols;
+            for(size_t i = 0; i < total_num; i++){
+                if(abs(this->pdata[i] - A.pdata[i]) > __DBL_MIN__) return false;
+            }
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
 

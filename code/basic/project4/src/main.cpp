@@ -11,12 +11,24 @@ int main(){
     A.display();
     cout << "B:" << endl;
     B.display();
+    cout << "A ?= A -> " << (A == A) << endl;
+    cout << "A ?= B -> " << (A == B) << endl;
 
-    myMatrix<float> C;
-    C = A + B;
-    cout << "C = A + B:" << endl;
-    C.display();
-    cout << "C ref:" << C.get_ref() << endl;
+    myMatrix<float> C1;
+    C1 = A + B;
+    cout << "C1 = A + B:" << endl;
+    C1.display();
+    cout << "C1 ref:" << C1.get_ref() << endl;
+
+    myMatrix<float> C2 = B + A;
+    cout << "C2 = B + A:" << endl;
+    C2.display();
+    cout << "C2 ref:" << C2.get_ref() << endl;
+
+    cout << "C1 ?= C2 -> " << (C1 == C2) << endl;
+
+    cout << "C2 - C1:" << endl;
+    (C2 - C1).display();
 
     myMatrix<float> D = B - A;
     cout << "D = B - A:" << endl;
@@ -40,4 +52,12 @@ int main(){
     A.display();
     cout << "A ref:" << A.get_ref() << endl;
     return 0;
+
+
+
+
+
+
+
+
 }

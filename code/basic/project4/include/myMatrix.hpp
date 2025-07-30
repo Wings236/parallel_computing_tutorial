@@ -163,8 +163,16 @@ public:
         return *(refcount);
     }
 
-    // get
+    // get parame
+    size_t getRows(){return this->rows;}
+    size_t getCols(){return this->cols;}
+    size_t getChannels(){return this->channels;}
 
+    // create_roi
+    myMatrixROI<T> create_roi(size_t sr, size_t sc, size_t sch,
+                                size_t r, size_t c, size_t ch) {
+        return myMatrixROI<T>(*this, sr, sc, sch, r, c, ch);
+    }
 };
 
 // ROI
@@ -195,18 +203,7 @@ public:
             throw std::out_of_range("ROI exceeds matrix bounds");
         }
     }
-
-
-    ~myMatrixROI(){
-
-
-
-    }
-
-
-
-
-
+    friend class myMatrix<T>;
 };
 
 #endif

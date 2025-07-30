@@ -163,6 +163,8 @@ public:
         return *(refcount);
     }
 
+    // get
+
 };
 
 // ROI
@@ -173,13 +175,33 @@ private:
     size_t start_row;
     size_t start_col;
     size_t start_channel;
-    size_t roi_row;
-    size_t roi_col;
-    size_t roi_channel;
+    size_t roi_rows;
+    size_t roi_cols;
+    size_t roi_channels;
 
 public:
-    myMatrixROI();
-    ~myMatrixROI();
+    myMatrixROI(myMatrix<T>& mat,
+                size_t sr, size_t sc, size_t sch,
+                size_t r, size_t c, size_t ch):parent(mat),
+                start_row(sr), start_col(sc), start_channel(sch),
+                roi_rows(r), roi_cols(c), roi_channels(ch){
+        validate_bounds();
+    }
+
+    void validate_bounds() const {
+        if (start_row + roi_rows > parent.getRows() ||
+            start_col + roi_cols > parent.getCols() ||
+            start_channel + roi_channels > parent.getChannels()) {
+            throw std::out_of_range("ROI exceeds matrix bounds");
+        }
+    }
+
+
+    ~myMatrixROI(){
+
+
+
+    }
 
 
 

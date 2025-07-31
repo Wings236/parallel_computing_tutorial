@@ -7,7 +7,4 @@ out*.txt
 matmul
 test_cblas
 
-# proj4
-build
-
 SimpleCNNbyCPP

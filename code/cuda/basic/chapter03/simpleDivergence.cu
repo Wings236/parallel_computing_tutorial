@@ -31,7 +31,7 @@ __global__ void mathKernel2(float *c)
     float ia, ib;
     ia = ib = 0.0f;
     // printf("warpSize:%d\n", warpSize);
-    printf("tid=%d, warpSize=%d, tid/warpSize=%d\n, true", tid, warpSize,  tid/warpSize);
+    // printf("tid=%d, warpSize=%d, tid/warpSize=%d\n, true", tid, warpSize,  tid/warpSize);
 
     if ((tid / warpSize) % 2 == 0)
     {

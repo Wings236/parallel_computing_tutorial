@@ -3,5 +3,5 @@
 
 int main()
 {
-    std::cout << "OpenCV Like Mat" << std::endl;
+    std::cout << "OpenCV like mat implement" << std::endl;
 }

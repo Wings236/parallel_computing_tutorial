@@ -6,4 +6,4 @@ aux_source_directory(./src DIR_SRCS)
 
 include_directories(./include)
 
-add_executable(OpenCVMatrix ${DIR_SRC})
+add_executable(OpenCVMatrix ${DIR_SRCS})

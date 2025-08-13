@@ -2,20 +2,20 @@
 #define __MAT_HPP__
 
 
-class mat
+class Mat
 {
 private:
     /* data */
 public:
-    mat(/* args */);
-    ~mat();
+    Mat(/* args */);
+    ~Mat();
 };
 
-mat::mat(/* args */)
+Mat::Mat(/* args */)
 {
 }
 
-mat::~mat()
+Mat::~Mat()
 {
 }
 

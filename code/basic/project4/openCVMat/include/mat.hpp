@@ -5,14 +5,54 @@ class UMatData;
 class MatSize;
 class MatStep;
 
+template <typename T>
 class Mat
 {
-private:
-    /* data */
 public:
+    // data control
+    T* data;
+    int refcount;
+
+    // matrix information
+    int rows;
+    int cols;
+    int dims;
+    MatSize size;
+    MatStep step;
+
+    // ROI
+    T* datastart;
+    T* dataend;
+
     Mat(/* args */);
     ~Mat();
+
+    // function
     void create();
+
+    void relase();
+
+    // ROI fucntion
+    void locateROI();
+
+    void adjustROI();
+
+    // operation
+    Mat& opeartor=();
+
+    Mat opeartor==();
+
+    Mat opeartor+();
+
+    Mat opeartor-();
+
+    Mat opeartor*();
+
+    // tool function
+    void disply();
+
+    int getrefcount();
+
 };
 
 

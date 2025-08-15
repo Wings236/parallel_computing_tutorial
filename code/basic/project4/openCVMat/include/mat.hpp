@@ -1,11 +1,38 @@
 #ifndef __MAT_HPP__
 #define __MAT_HPP__
 
-class UMatData;
-class MatSize;
-class MatStep;
+// ================================== type ==================================
+class Range
+{
 
-template <typename T>
+};
+
+class Size
+{
+
+};
+
+
+// ================================== Mat ==================================
+class MatSize
+{
+public:
+    MatSize(int* _p);
+
+    int* p;
+};
+
+
+class MatStep
+{
+public:
+    MatStep(int* _p);
+
+    int* step;
+};
+
+
+template<typename T>
 class Mat
 {
 public:
@@ -24,7 +51,8 @@ public:
     T* datastart;
     T* dataend;
 
-    Mat(/* args */);
+    Mat();
+    Mat(int rows, int cols);
     ~Mat();
 
     // function
@@ -38,15 +66,15 @@ public:
     void adjustROI();
 
     // operation
-    Mat& opeartor=();
+    Mat& operator=(const Mat& m);
 
-    Mat opeartor==();
+    Mat operator==(const Mat& m);
 
-    Mat opeartor+();
+    Mat operator+();
 
-    Mat opeartor-();
+    Mat operator-();
 
-    Mat opeartor*();
+    Mat operator*();
 
     // tool function
     void disply();

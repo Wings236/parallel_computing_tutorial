@@ -49,14 +49,21 @@ public:
 
     // ROI
     T* datastart;
+    T* datalimit;
     T* dataend;
 
+    // construction
     Mat();
+
     Mat(int rows, int cols);
+
+    void create(int ndims, const int* sizes);
+
+    void addref();
+
+    // destruction
     ~Mat();
 
-    // function
-    void create();
 
     void relase();
 

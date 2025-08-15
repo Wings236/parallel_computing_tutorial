@@ -9,6 +9,25 @@ Mat<T>::Mat()
     datastart(nullptr), dataend(nullptr)
 {}
 
+template<typename T>
+void Mat<T>::create(int ndims, const int* _sizes)
+{
+    // check if it is a created Mat
+    if(data)
+    {
+        return;
+    }
+
+    // release
+    relase();
+
+    // Size
+
+
+    // allocate
+    data = new T[sizes[0] * sizes[1]];
+}
+
 
 template<typename T>
 Mat<T>::~Mat()
@@ -16,11 +35,7 @@ Mat<T>::~Mat()
 
 }
 
-template<typename T>
-void Mat<T>::create()
-{
 
-}
 
 
 

@@ -14,31 +14,42 @@ class Size
 
 
 // ================================== Mat ==================================
+// 用来存储矩阵每一个维度的大小
 class MatSize
 {
 public:
-    MatSize(int* _p);
+    MatSize();
+    MatSize(int* _sizes);
+    int& operator[] (const int i);
+    MatSize& operator = (int* _sizes);
 
-    int* p;
+    int* sizes;
 };
 
-
+// 用来存储矩阵每一个维度+1需要跨多少个数据
 class MatStep
 {
 public:
-    MatStep(int* _p);
+    MatStep();
+    MatStep(int* _steps);
+    MatStep& operator = (int* _sizes);
 
-    int* step;
+    int* steps;
 };
 
 
 template<typename T>
 class Mat
 {
+private:
+    void create(int ndims, const int* sizes);
+
+    void relase();
+
 public:
     // data control
     T* data;
-    int refcount;
+    int* refcount;
 
     // matrix information
     int rows;
@@ -57,15 +68,8 @@ public:
 
     Mat(int rows, int cols);
 
-    void create(int ndims, const int* sizes);
-
-    void addref();
-
     // destruction
     ~Mat();
-
-
-    void relase();
 
     // ROI fucntion
     void locateROI();

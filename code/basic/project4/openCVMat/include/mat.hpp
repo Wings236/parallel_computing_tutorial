@@ -6,7 +6,8 @@ class Range
 {
     Range();
     Range(int start, int end);
-    int all();
+    const Range& all();
+    const Range& operator =(Range& r);
 
     int start, end;
 };
@@ -36,6 +37,7 @@ class MatStep
 public:
     MatStep();
     MatStep(int* _steps);
+    int& operator[] (const int i);
     MatStep& operator = (int* _sizes);
 
     int* steps;
@@ -54,8 +56,8 @@ private:
 
 public:
     // data control
-    T* data;
-    int* refcount;
+    T* data = nullptr;
+    int* refcount = nullptr;
 
     // matrix information
     int rows;
@@ -78,12 +80,12 @@ public:
 
     Mat(int ndims, const int* size);
 
-    Mat(int ndims, const int* isze, T* data);
+    Mat(int ndims, const int* size, T* data, size_t total);
 
     Mat(const Mat& m);
 
     // ROI
-    Mat(const Mat& m, const Range& rowRange, const Range& colRang=Range::all());
+    // Mat(const Mat& m, const Range& rowRange, const Range& colRang=Range::all());
 
     Mat(const Mat& m, Size& roi);
 
@@ -117,10 +119,7 @@ public:
     bool empty() const;
 
     size_t total() const;
-
 };
-
-
 
 
 #include "mat.inl.hpp"

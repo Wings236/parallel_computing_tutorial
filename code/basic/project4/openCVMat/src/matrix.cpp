@@ -24,6 +24,11 @@ MatStep::MatStep(int* _steps)
 :steps(_steps)
 {}
 
+int& MatStep::operator[] (const int i)
+{
+    return steps[i];
+}
+
 MatStep& MatStep::operator=(int* _steps)
 {
     steps = _steps;

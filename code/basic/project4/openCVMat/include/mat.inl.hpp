@@ -1,6 +1,6 @@
 #ifndef __MAT_OPERATION_HPP__
 #define __MAT_OPERATION_HPP__
-#include <math.h>
+#include <iostream>
 // ========================================= Mat =========================================
 
 template<typename T>
@@ -8,6 +8,7 @@ Mat<T>::Mat()
     :dims(0), rows(0), cols(0), data(nullptr), refcount(0), size(nullptr), step(nullptr),
     datastart(nullptr), dataend(nullptr)
 {}
+
 
 template<typename T>
 void Mat<T>::create(int ndims, const int* _sizes)
@@ -57,13 +58,13 @@ void Mat<T>::create(int ndims, const int* _sizes)
     datalimit = dataend = data + total;
 }
 
+
 template<typename T>
 void Mat<T>::create(int ndims, const int* _sizes, T* _data, size_t total)
 {
     create(ndims, _sizes);
     for(int i = 0; i < total; i++) data[i] = _data[i];
 }
-
 
 
 template<typename T>
@@ -85,6 +86,28 @@ Mat<T>::Mat(int _rows, int _cols, T* _data, size_t total)
     create(2, _size, _data, total);
 }
 
+
+template<typename T>
+Mat<T>::Mat(int ndims, const int* _size)
+{
+    create(ndims, _size);
+}
+
+
+template<typename T>
+Mat<T>::Mat(int ndims, const int* _size, T* _data, size_t total)
+{
+    create(ndims, _size, _data, total);
+}
+
+
+template<typename T>
+Mat<T>::Mat(const Mat<T>& m)
+{
+
+
+
+}
 
 
 template<typename T>
@@ -110,7 +133,30 @@ Mat<T>::~Mat()
 
 template<typename T>
 int Mat<T>::getrefcount(){
-    return refcount;
+    return *refcount;
+}
+
+
+template<typename T>
+void Mat<T>::disply(){
+    // 打印二维
+    if(dims <= 2)
+    {
+        std::cout<< "[";
+        for(int i = 0; i < rows; i++){
+            std::cout << "[";
+            for(int j = 0; j < cols; j++){
+                if(j == cols - 1) std::cout << data[i*step[0] + j];
+                else std::cout << data[i*step[0] + j] << ", ";
+            }
+            if(i == rows-1) std::cout<< "]]" << std::endl;
+            else std::cout << "]" <<std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "维度太多，不便展示" <<std::endl;
+    }
 }
 
 #endif

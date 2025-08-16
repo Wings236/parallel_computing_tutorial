@@ -1,6 +1,6 @@
 #ifndef __MAT_OPERATION_HPP__
 #define __MAT_OPERATION_HPP__
-
+#include <math.h>
 // ========================================= Mat =========================================
 
 template<typename T>
@@ -57,6 +57,14 @@ void Mat<T>::create(int ndims, const int* _sizes)
     datalimit = dataend = data + total;
 }
 
+template<typename T>
+void Mat<T>::create(int ndims, const int* _sizes, T* _data, size_t total)
+{
+    create(ndims, _sizes);
+    for(int i = 0; i < total; i++) data[i] = _data[i];
+}
+
+
 
 template<typename T>
 Mat<T>::Mat(int _rows, int _cols)
@@ -66,6 +74,17 @@ Mat<T>::Mat(int _rows, int _cols)
     _size[1] = _cols;
     create(2, _size);
 }
+
+
+template<typename T>
+Mat<T>::Mat(int _rows, int _cols, T* _data, size_t total)
+{
+    int _size[2];
+    _size[0] = _rows;
+    _size[1] = _cols;
+    create(2, _size, _data, total);
+}
+
 
 
 template<typename T>

@@ -1,10 +1,14 @@
 #ifndef __MAT_HPP__
 #define __MAT_HPP__
-
+#include <math.h>
 // ================================== type ==================================
 class Range
 {
+    Range();
+    Range(int start, int end);
+    int all();
 
+    int start, end;
 };
 
 class Size
@@ -44,6 +48,8 @@ class Mat
 private:
     void create(int ndims, const int* sizes);
 
+    void create(int ndims, const int* _sizes, T* data, size_t total);
+
     void relase();
 
 public:
@@ -68,6 +74,20 @@ public:
 
     Mat(int rows, int cols);
 
+    Mat(int rows, int cols, T* data, size_t total);
+
+    Mat(int ndims, const int* size);
+
+    Mat(int ndims, const int* isze, T* data);
+
+    Mat(const Mat& m);
+
+    // ROI
+    Mat(const Mat& m, const Range& rowRange, const Range& colRang=Range::all());
+
+    Mat(const Mat& m, Size& roi);
+
+
     // destruction
     ~Mat();
 
@@ -91,6 +111,12 @@ public:
     void disply();
 
     int getrefcount();
+
+    int channel() const;
+
+    bool empty() const;
+
+    size_t total() const;
 
 };
 

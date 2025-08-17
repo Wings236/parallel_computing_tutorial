@@ -26,6 +26,7 @@ public:
     MatSize();
     MatSize(int* _sizes);
     int& operator[] (const int i);
+    const int& operator[] (int i) const;
     MatSize& operator = (int* _sizes);
 
     int* sizes;
@@ -38,6 +39,7 @@ public:
     MatStep();
     MatStep(int* _steps);
     int& operator[] (const int i);
+    const int& operator[] (int i) const;
     MatStep& operator = (int* _sizes);
 
     int* steps;
@@ -103,11 +105,11 @@ public:
 
     bool operator==(const Mat& m);
 
-    Mat operator+();
+    Mat operator+(const Mat& m);
 
-    Mat operator-();
+    Mat operator-(const Mat& m);
 
-    Mat operator*();
+    Mat operator*(const Mat& m);
 
     // tool function
     void disply();

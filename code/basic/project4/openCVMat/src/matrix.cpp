@@ -12,6 +12,10 @@ int& MatSize::operator[] (const int i)
     return sizes[i];
 }
 
+const int& MatSize::operator[] (const int i) const
+{
+    return sizes[i];
+}
 
 MatSize& MatSize::operator=(int* _sizes){
     sizes = _sizes;

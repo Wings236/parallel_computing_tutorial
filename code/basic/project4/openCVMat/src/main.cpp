@@ -10,8 +10,9 @@ int main()
     Mat<float> B(10, 10);
     std::cout <<"ref:" << B.getrefcount() <<std::endl;
 
-    float value[9] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
-    Mat<float> C(3, 3, value, 9);
+    float value1[9] = {0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f};
+    float value2[9] = {0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f};
+    Mat<float> C(3, 3, value1, 9);
     C.disply();
 
     Mat<float> D(C);
@@ -30,4 +31,15 @@ int main()
     std::cout <<"E ref:" << E.getrefcount() <<std::endl;
     std::cout <<"C ref:" << C.getrefcount() <<std::endl;
     std::cout <<"D ref:" << D.getrefcount() <<std::endl;
+
+    // operation test
+    Mat<float> F(3, 3, value2, 9);
+    F.disply();
+
+    Mat<float> G = F+C;
+    G.disply();
+    std::cout <<"F ref:" << F.getrefcount() <<std::endl;
+    std::cout <<"C ref:" << C.getrefcount() <<std::endl;
+    std::cout <<"G ref:" << G.getrefcount() <<std::endl;
+
 }

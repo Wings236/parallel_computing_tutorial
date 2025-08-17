@@ -175,25 +175,74 @@ Mat<T>& Mat<T>::operator=(const Mat<T>& m)
 template<typename T>
 bool Mat<T>::operator==(const Mat<T>& m)
 {
-    if(data || this->dims != m.dims || this->rows != m.rows || this->cols != m.cols) return false
+    // check dim <= 2
+    if(!data || !m.data || this->dims != m.dims || this->rows != m.rows || this->cols != m.cols) return false;
+    // check dim > 2
+    else if(this->dims >2) for(int i = 0; i < channel; i++) if(this->size[i] != m.size[i]) return false;
+    // check data
+    else for(int i = 0; i < total(); i++) if(this->data[i] != m.data[i]) return false;
+    return true;
+}
+
+
+template<typename T>
+Mat<T> Mat<T>::operator+(const Mat& m)
+{
+    // check shape
+    if(!data || !m.data || this->dims != m.dims || this->rows != m.rows || this->cols != m.cols)
+    {
+        std::cout << "This is no match matrix shape, it will retrun the left matrix" << std::endl;
+        return *this;
+    }
+    else if(this->dims >2) for(int i = 0; i < channel(); i++) if(this->size[i] != m.size[i])
+    {
+        std::cout << "This is no match matrix shape, it will retrun the left matrix" << std::endl;
+        return *this;
+    }
     else
     {
-        for(int i = 0; i < total(); i++)
-        {
-            
-        }
+        Mat<T> temp = *this;
+        for(int i = 0; i < total(); i++) temp.data[i] = this->data[i] + m.data[i];
+        return temp;
     }
+    return *this;
+}
 
 
+template<typename T>
+Mat<T> Mat<T>::operator-(const Mat& m)
+{
+    // check shape
+    if(!data || !m.data || this->dims != m.dims || this->rows != m.rows || this->cols != m.cols)
+    {
+        std::cout << "This is no match matrix shape, it will retrun the left matrix" << std::endl;
+        return *this;
+    }
+    else if(this->dims >2) for(int i = 0; i < channel; i++) if(this->size[i] != m.size[i])
+    {
+        std::cout << "This is no match matrix shape, it will retrun the left matrix" << std::endl;
+        return *this;
+    }
+    else
+    {
+        Mat<T> temp = *this;
+        for(int i = 0; i < total(); i++) temp.data[i] = this->data[i] - m.data[i];
+        return temp;
+    }
+    return *this;
+}
+
+
+template<typename T>
+Mat<T> Mat<T>::operator*(const Mat& m)
+{
+    
 }
 
 
 
 
-
 // tool function
-
-
 template<typename T>
 int Mat<T>::getrefcount(){
     return *refcount;
@@ -237,13 +286,16 @@ bool Mat<T>::empty() const
 }
 
 
-// template<typename T>
-// size_t Mat<T>::total() const
-// {
-//     int total = 1;
-//     for(int i = 0; i < channel(); i++) total *= this->size[i];
-//     return total;
-// }
+template<typename T>
+size_t Mat<T>::total() const
+{
+    int total = 1;
+    for(int i = 0; i < channel(); i++)
+    {
+        total *= this->size[i];
+    }
+    return total;
+}
 
 
 #endif

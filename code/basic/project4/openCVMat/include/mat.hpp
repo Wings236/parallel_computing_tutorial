@@ -101,7 +101,7 @@ public:
     // operation
     Mat& operator=(const Mat& m);
 
-    Mat operator==(const Mat& m);
+    bool operator==(const Mat& m);
 
     Mat operator+();
 

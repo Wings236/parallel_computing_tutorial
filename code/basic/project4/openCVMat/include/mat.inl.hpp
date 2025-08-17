@@ -103,9 +103,16 @@ Mat<T>::Mat(int ndims, const int* _size, T* _data, size_t total)
 
 template<typename T>
 Mat<T>::Mat(const Mat<T>& m)
+:data(m.data), refcount(m.refcount), rows(m.rows), cols(m.cols), dims(m.dims), size(m.size.sizes), step(m.step.steps),
+datastart(m.datastart), datalimit(m.datalimit), dataend(m.dataend)
 {
+    ++*(refcount);
+}
 
 
+template<typename T>
+Mat<T>::Mat(const Mat& m, Size& roi)
+{
 
 }
 
@@ -129,6 +136,62 @@ Mat<T>::~Mat()
 {
     relase();
 }
+
+
+// ROI
+
+
+
+
+
+
+// operator
+template<typename T>
+Mat<T>& Mat<T>::operator=(const Mat<T>& m)
+{
+    // relase
+    relase();
+
+    // copy
+    this->data = m.data;
+    this->refcount = m.refcount;
+    ++(*this->refcount);
+
+    this->rows = m.rows;
+    this->cols = m.cols;
+    this->dims = m.dims;
+    this->size = m.size;
+    this->step = m.step;
+
+    // ROI
+    this->datastart = m.datastart;
+    this->datalimit = m.datalimit;
+    this->dataend= m.dataend;
+
+    return *this;
+}
+
+
+template<typename T>
+bool Mat<T>::operator==(const Mat<T>& m)
+{
+    if(data || this->dims != m.dims || this->rows != m.rows || this->cols != m.cols) return false
+    else
+    {
+        for(int i = 0; i < total(); i++)
+        {
+            
+        }
+    }
+
+
+}
+
+
+
+
+
+// tool function
 
 
 template<typename T>
@@ -158,5 +221,29 @@ void Mat<T>::disply(){
         std::cout << "维度太多，不便展示" <<std::endl;
     }
 }
+
+
+template<typename T>
+int Mat<T>::channel() const
+{
+    return dims;
+}
+
+
+template<typename T>
+bool Mat<T>::empty() const
+{
+    return data?true:false;
+}
+
+
+// template<typename T>
+// size_t Mat<T>::total() const
+// {
+//     int total = 1;
+//     for(int i = 0; i < channel(); i++) total *= this->size[i];
+//     return total;
+// }
+
 
 #endif

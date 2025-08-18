@@ -35,11 +35,31 @@ int main()
     // operation test
     Mat<float> F(3, 3, value2, 9);
     F.disply();
+    std::cout <<"F ref:" << F.getrefcount() <<std::endl;
 
-    Mat<float> G = F+C;
+    Mat<float> G = F + C;
     G.disply();
     std::cout <<"F ref:" << F.getrefcount() <<std::endl;
     std::cout <<"C ref:" << C.getrefcount() <<std::endl;
     std::cout <<"G ref:" << G.getrefcount() <<std::endl;
+
+    Mat<float> H = F + C;
+    H.disply();
+
+    Mat<float> I = F - C;
+    I.disply();
+
+    bool ifEqual1 = (H == G);
+    bool ifEqual2 = (I == G);
+    std::cout <<"H == G:? " << ifEqual1 <<std::endl;
+    std::cout <<"I == G:? " << ifEqual2 <<std::endl;
+
+    Mat<float> J = F * C;
+    J.disply();
+
+    Mat<float> K = F.matmul(G);
+    F.disply();
+    G.disply();
+    K.disply();
 
 }

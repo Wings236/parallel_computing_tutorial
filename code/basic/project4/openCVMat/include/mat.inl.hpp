@@ -117,7 +117,7 @@ Mat<T>::Mat(const Mat& m, Size& roi)
 }
 
 
-template<typename T>
+template<typename T>// TODO
 void Mat<T>::relase()
 {
     if(data && (--(*refcount) == 0))
@@ -178,7 +178,11 @@ bool Mat<T>::operator==(const Mat<T>& m)
     // check dim <= 2
     if(!data || !m.data || this->dims != m.dims || this->rows != m.rows || this->cols != m.cols) return false;
     // check dim > 2
-    else if(this->dims >2) for(int i = 0; i < channel; i++) if(this->size[i] != m.size[i]) return false;
+    else if(this->dims >2)
+    {
+        for(int i = 0; i < channel(); i++)
+        if(this->size[i] != m.size[i]) return false;
+    }
     // check data
     else for(int i = 0; i < total(); i++) if(this->data[i] != m.data[i]) return false;
     return true;
@@ -194,14 +198,17 @@ Mat<T> Mat<T>::operator+(const Mat& m)
         std::cout << "This is no match matrix shape, it will retrun the left matrix" << std::endl;
         return *this;
     }
-    else if(this->dims >2) for(int i = 0; i < channel(); i++) if(this->size[i] != m.size[i])
+    else if(this->dims >2)
     {
-        std::cout << "This is no match matrix shape, it will retrun the left matrix" << std::endl;
-        return *this;
+        for(int i = 0; i < channel(); i++) if(this->size[i] != m.size[i])
+        {
+            std::cout << "This is no match matrix shape, it will retrun the left matrix" << std::endl;
+            return *this;
+        }
     }
     else
     {
-        Mat<T> temp = *this;
+        Mat<T> temp(this->dims, this->size.sizes, this->data, this->total());
         for(int i = 0; i < total(); i++) temp.data[i] = this->data[i] + m.data[i];
         return temp;
     }
@@ -218,14 +225,17 @@ Mat<T> Mat<T>::operator-(const Mat& m)
         std::cout << "This is no match matrix shape, it will retrun the left matrix" << std::endl;
         return *this;
     }
-    else if(this->dims >2) for(int i = 0; i < channel; i++) if(this->size[i] != m.size[i])
+    else if(this->dims >2)
     {
-        std::cout << "This is no match matrix shape, it will retrun the left matrix" << std::endl;
-        return *this;
+        for(int i = 0; i < channel(); i++) if(this->size[i] != m.size[i])
+        {
+            std::cout << "This is no match matrix shape, it will retrun the left matrix" << std::endl;
+            return *this;
+        }
     }
     else
     {
-        Mat<T> temp = *this;
+        Mat<T> temp(this->dims, this->size.sizes, this->data, this->total());
         for(int i = 0; i < total(); i++) temp.data[i] = this->data[i] - m.data[i];
         return temp;
     }
@@ -236,10 +246,56 @@ Mat<T> Mat<T>::operator-(const Mat& m)
 template<typename T>
 Mat<T> Mat<T>::operator*(const Mat& m)
 {
-    
+    // check shape
+    if(!data || !m.data || this->dims != m.dims || this->rows != m.rows || this->cols != m.cols)
+    {
+        std::cout << "This is no match matrix shape, it will retrun the left matrix" << std::endl;
+        return *this;
+    }
+    else if(this->dims >2)
+    {
+        for(int i = 0; i < channel(); i++) if(this->size[i] != m.size[i])
+        {
+            std::cout << "This is no match matrix shape, it will retrun the left matrix" << std::endl;
+            return *this;
+        }
+    }
+    else
+    {
+        Mat<T> temp(this->dims, this->size.sizes, this->data, this->total());
+        for(int i = 0; i < total(); i++) temp.data[i] = this->data[i] * m.data[i];
+        return temp;
+    }
+    return *this;
 }
 
 
+template<typename T>
+Mat<T> Mat<T>::matmul(const Mat& m)
+{
+    // only support 2 dim matrix to multiply.
+    if(this->dims > 2 || m.dims >2 || this->cols != m.rows) return *this;
+    else
+    {
+        int total = this->rows*m.cols;
+        int _size[2] = {this->rows, m.cols};
+        T value[total] = {0};
+        Mat<T> temp(2, _size, value, total);
+
+        for(int i = 0; i < this->rows; i++)
+        {
+            for(int j = 0; j < m.cols; j++)
+            {
+                T temp_value = 0;
+                for(int k = 0; k < m.rows; k++){
+                    temp_value += this->data[i*this->step[0] + k] * m.data[k*m.size[0] + j];
+                }
+                temp.data[i*step[0] + j] = temp_value;
+            }
+        }
+        return temp;
+    }
+}
 
 
 // tool function

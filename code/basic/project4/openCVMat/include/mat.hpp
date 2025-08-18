@@ -111,6 +111,8 @@ public:
 
     Mat operator*(const Mat& m);
 
+    Mat matmul(const Mat& m);
+
     // tool function
     void disply();
 

@@ -96,9 +96,9 @@ public:
     ~Mat();
 
     // ROI fucntion
-    void locateROI();
+    void locateROI(Size& wholeSize, Size& ofs);
 
-    void adjustROI();
+    void adjustROI(int dtop, int dbottom, int dleft, int dright);
 
     // operation
     Mat& operator=(const Mat& m);

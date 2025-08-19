@@ -6,7 +6,7 @@ class Range
 {
     Range();
     Range(int start, int end);
-    const Range& all();
+    static Range all();
     const Range& operator =(Range& r);
 
     int start, end;
@@ -87,10 +87,11 @@ public:
     Mat(const Mat& m);
 
     // ROI
-    // Mat(const Mat& m, const Range& rowRange, const Range& colRang=Range::all());
+    Mat(const Mat& m, const Range& rowRange, const Range& colRang=Range::all());
 
     Mat(const Mat& m, Size& roi);
 
+    Mat::Mat(const Mat& m, const Range* ranges, const int range_nums);
 
     // destruction
     ~Mat();
@@ -98,7 +99,7 @@ public:
     // ROI fucntion
     void locateROI(Size& wholeSize, Size& ofs);
 
-    void adjustROI(int dtop, int dbottom, int dleft, int dright);
+    Mat adjustROI(int dtop, int dbottom, int dleft, int dright);
 
     // operation
     Mat& operator=(const Mat& m);
@@ -112,6 +113,12 @@ public:
     Mat operator*(const Mat& m);
 
     Mat matmul(const Mat& m);
+
+    // Mat operator()( Range rowRange, Range colRange ) const;
+
+    // Mat operator()( const Rect& roi ) const;
+
+    // Mat operator()( const Range* ranges ) const;
 
     // tool function
     void disply();

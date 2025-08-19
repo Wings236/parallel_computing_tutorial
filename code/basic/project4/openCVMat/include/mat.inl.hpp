@@ -110,14 +110,31 @@ datastart(m.datastart), datalimit(m.datalimit), dataend(m.dataend)
 }
 
 
-template<typename T>
+template<typename T>// TODO
+Mat<T>::Mat(const Mat& m, const Range& rowRange, const Range& colRang)
+{
+    // check dims
+
+    // change size
+
+}
+
+
+template<typename T>// TODO
 Mat<T>::Mat(const Mat& m, Size& roi)
 {
 
 }
 
 
-template<typename T>// TODO
+template<typename T>
+Mat<T>::Mat(const Mat& m, const Range* ranges, const int range_nums)
+{
+
+}
+
+
+template<typename T>
 void Mat<T>::relase()
 {
     if(data && (--(*refcount) == 0))
@@ -138,10 +155,18 @@ Mat<T>::~Mat()
 }
 
 
-// ROI
+//TODO: ROI
+template<typename T>
+void Mat<T>::locateROI(Size& wholeSize, Size& ofs)
+{
+}
 
 
+template<typename T>
+Mat<T> Mat<T>::adjustROI(int dtop, int dbottom, int dleft, int dright)
+{
 
+}
 
 
 

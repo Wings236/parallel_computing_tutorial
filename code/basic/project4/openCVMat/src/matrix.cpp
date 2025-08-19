@@ -1,5 +1,20 @@
 #include "mat.hpp"
 
+// ================================== type ==================================
+Range::Range(int _start, int _end)
+{
+    start = _start;
+    end = _end;
+}
+
+Range Range::all()
+{
+    return Range(INT32_MIN, INT32_MAX);
+}
+
+
+
+
 // ================================ Mat ================================
 MatSize::MatSize(){}
 

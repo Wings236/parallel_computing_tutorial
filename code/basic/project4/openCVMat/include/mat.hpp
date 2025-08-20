@@ -6,15 +6,20 @@ class Range
 {
     Range();
     Range(int start, int end);
+    int size() const;
+    bool empty() const;
     static Range all();
-    const Range& operator =(Range& r);
+    const Range& operator=(Range& r);
+    bool operator==(const Range& r) const;
+    bool operator!=(const Range& r) const;
 
     int start, end;
 };
 
 class Size
 {
-
+    int x;
+    int y;
 };
 
 
@@ -50,7 +55,7 @@ template<typename T>
 class Mat
 {
 private:
-    void create(int ndims, const int* sizes);
+    void create(int ndims, const int *sizes);
 
     void create(int ndims, const int* _sizes, T* data, size_t total);
 
@@ -70,8 +75,8 @@ public:
 
     // ROI
     T* datastart;
-    T* datalimit;
     T* dataend;
+    bool isSubMatrix = false;
 
     // construction
     Mat();
@@ -89,9 +94,7 @@ public:
     // ROI
     Mat(const Mat& m, const Range& rowRange, const Range& colRang=Range::all());
 
-    Mat(const Mat& m, Size& roi);
-
-    Mat::Mat(const Mat& m, const Range* ranges, const int range_nums);
+    Mat(const Mat& m, const Range* ranges);
 
     // destruction
     ~Mat();

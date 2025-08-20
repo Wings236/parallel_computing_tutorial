@@ -7,12 +7,42 @@ Range::Range(int _start, int _end)
     end = _end;
 }
 
+
+int Range::size() const
+{
+    return end - start;
+}
+
+
+bool Range::empty() const
+{
+    return (start == end)?true:false;
+}
+
+
 Range Range::all()
 {
     return Range(INT32_MIN, INT32_MAX);
 }
 
 
+const Range& Range::operator=(Range& r)
+{
+    this->start = r.start;
+    this->end = r.end;
+    return *this;
+}
+
+bool Range::operator==(const Range& r) const
+{
+    return (this->start == r.start && this->end == r.end)?true:false;
+}
+
+
+bool Range::operator!=(const Range& r) const
+{
+    return !(*this == r);
+}
 
 
 // ================================ Mat ================================

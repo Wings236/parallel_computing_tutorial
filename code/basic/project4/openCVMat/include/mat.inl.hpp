@@ -55,7 +55,7 @@ void Mat<T>::create(int ndims, const int* _sizes)
 
     // ROI
     datastart = data;
-    datalimit = dataend = data + total;
+    dataend = data + total;
 }
 
 
@@ -104,33 +104,72 @@ Mat<T>::Mat(int ndims, const int* _size, T* _data, size_t total)
 template<typename T>
 Mat<T>::Mat(const Mat<T>& m)
 :data(m.data), refcount(m.refcount), rows(m.rows), cols(m.cols), dims(m.dims), size(m.size.sizes), step(m.step.steps),
-datastart(m.datastart), datalimit(m.datalimit), dataend(m.dataend)
+datastart(m.datastart), dataend(m.dataend)
 {
     ++*(refcount);
 }
 
 
-template<typename T>// TODO
+template<typename T>
 Mat<T>::Mat(const Mat& m, const Range& rowRange, const Range& colRang)
+:rows(0), cols(0), dims(0), size(nullptr), step(nullptr), data(nullptr), refcount(nullptr)
+,datastart(nullptr), dataend(nullptr)
 {
     // check dims
+    if(m.dims>2)
+    {
+        std::cout << "can't create the ROI matrix, it will be return original matrix" << std::endl;
+        *this = m;
+        return;
+    }
 
-    // change size
-
-}
-
-
-template<typename T>// TODO
-Mat<T>::Mat(const Mat& m, Size& roi)
-{
-
+    // create the ROI
+    if(rowRange != Range::all() && rowRange != Range(0, m.size[0]))
+    {
+        this->rows = rowRange.size();
+        data += rowRange.start * m.step[0];
+    }
+    if(colRang != Range::all() && colRang != Range(0, m.size[1]))
+    {
+        this->cols = colRang.size();
+        data += colRang.start * m.step[1];
+    }
+    isSubMatrix = true;
 }
 
 
 template<typename T>
-Mat<T>::Mat(const Mat& m, const Range* ranges, const int range_nums)
+Mat<T>::Mat(const Mat& m, const Range* ranges)
+:rows(0), cols(0), dims(0), size(nullptr), step(nullptr), data(nullptr), refcount(nullptr)
+,datastart(nullptr), dataend(nullptr)
 {
+    // check the input size
+    int d = m.dims;
+    for(int i = 0; i < d; i++)
+    {
+        Range r = ranges[i];
+        if(r == Range::all() || (0 <= r.start && r.start <r.end && r.end < m.size[i]))
+        {}
+        else
+        {
+            std::cout << "can't create the ROI matrix, it will be return original matrix" << std::endl;
+            *this = m;
+            return;
+        }
+    }
 
+    // create the ROI
+    *this = m;
+    for(int i = 0; i < d; i++)
+    {
+        Range r = ranges[i];
+        if(r != Range::all() && r != Range(0, m.size[i]))
+        {
+            this->size[i] = r.size();
+            data += r.start * m.step[i];
+        }
+    }
+    isSubMatrix = true;
 }
 
 
@@ -140,7 +179,7 @@ void Mat<T>::relase()
     if(data && (--(*refcount) == 0))
     {
         delete [] data;
-        data = datastart = datalimit = dataend = nullptr;
+        data = datastart = dataend = nullptr;
         delete [] size.sizes;
         delete [] step.steps;
         delete refcount;
@@ -155,19 +194,51 @@ Mat<T>::~Mat()
 }
 
 
-//TODO: ROI
 template<typename T>
 void Mat<T>::locateROI(Size& wholeSize, Size& ofs)
 {
+    size_t minstep;
+    ptrdiff_t delta1 = data - datastart, delta2 = dataend - datastart;
+    if( delta1 == 0 )
+        ofs.x = ofs.y = 0;
+    else
+    {
+        ofs.y = (int)(delta1/step[0]);
+        ofs.x = (int)((delta1 - step[0]*ofs.y));
+    }
+    minstep = (ofs.x + cols);
+    wholeSize.y = (int)((delta2 - minstep)/step[0] + 1);
+    wholeSize.y = std::max(wholeSize.y, ofs.y + rows);
+    wholeSize.x = (int)((delta2 - step.steps[0]*(wholeSize.y-1)));
+    wholeSize.x = std::max(wholeSize.x, ofs.x + cols);
 }
 
 
 template<typename T>
 Mat<T> Mat<T>::adjustROI(int dtop, int dbottom, int dleft, int dright)
 {
+    if(dims > 2)
+    {
+        std::cout << "Error: This is no a dim-2 matrix, will return nothing Matrix" << std::endl;
+        return Mat<T>();
+    }
+    else
+    {
+        Size wholeSize; Size ofs;
+        locateROI(wholeSize, ofs );
+        int row1 = std::min(std::max(ofs.y - dtop, 0), wholeSize.y), row2 = std::max(0, std::min(ofs.y + rows + dbottom, wholeSize.y));
+        int col1 = std::min(std::max(ofs.x - dleft, 0), wholeSize.x), col2 = std::max(0, std::min(ofs.x + cols + dright, wholeSize.x));
+        if(row1 > row2)
+            std::swap(row1, row2);
+        if(col1 > col2)
+            std::swap(col1, col2);
 
+        data += (row1 - ofs.y)*(std::ptrdiff_t)step[0] + (col1 - ofs.x);
+        rows = row2 - row1; cols = col2 - col1;
+        size.sizes[0] = rows; size.sizes[1] = cols;
+        return *this;
+    }
 }
-
 
 
 // operator
@@ -190,8 +261,8 @@ Mat<T>& Mat<T>::operator=(const Mat<T>& m)
 
     // ROI
     this->datastart = m.datastart;
-    this->datalimit = m.datalimit;
     this->dataend= m.dataend;
+    this->isSubMatrix = m.isSubMatrix;
 
     return *this;
 }
@@ -209,6 +280,7 @@ bool Mat<T>::operator==(const Mat<T>& m)
         if(this->size[i] != m.size[i]) return false;
     }
     // check data
+    // TODO isSubMatrix
     else for(int i = 0; i < total(); i++) if(this->data[i] != m.data[i]) return false;
     return true;
 }

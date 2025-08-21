@@ -8,3 +8,5 @@
 - C++ Primer (第五版), Stanley Lippman
 - [parallel-computing-tutorial](https://github.com/mit-han-lab/parallel-computing-tutorial)
 - [OpenBLAS](http://www.openmathlib.org/OpenBLAS/docs/)
+- [OpenCV](https://github.com/opencv/opencv)
+- [cuBLAS](https://docs.nvidia.com/cuda/cublas/index.html)

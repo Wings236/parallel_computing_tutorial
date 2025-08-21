@@ -81,13 +81,13 @@ public:
     // construction
     Mat();
 
-    Mat(int rows, int cols);
+    Mat(int rows, int cols);// TODO channel
 
-    Mat(int rows, int cols, T* data, size_t total);
+    Mat(int rows, int cols, T* data, size_t total);// TODO channel
 
-    Mat(int ndims, const int* size);
+    Mat(int ndims, const int* size);// TODO channel
 
-    Mat(int ndims, const int* size, T* data, size_t total);
+    Mat(int ndims, const int* size, T* data, size_t total);// TODO channel
 
     Mat(const Mat& m);
 
@@ -128,7 +128,7 @@ public:
 
     int getrefcount();
 
-    int channel() const;
+    int channel() const;//! wrong channel
 
     bool empty() const;
 

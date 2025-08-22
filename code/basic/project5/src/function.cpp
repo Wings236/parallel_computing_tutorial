@@ -19,7 +19,7 @@ void conv2d(const float* input, const int in_channels, const int in_rows, const 
         {
             for(int j = 0; j < in_cols; j++)
             {
-                pad_input[c*pad_size + (i+1) * pad_in_cols + 1 + j] = input[c*mat_size + i * in_cols + j];
+                pad_input[c*pad_size + (i+conv_params.pad) * pad_in_cols + conv_params.pad + j] = input[c*mat_size + i * in_cols + j];
             }
         }
     }
@@ -58,7 +58,6 @@ void conv2d(const float* input, const int in_channels, const int in_rows, const 
             }
         }
     }
-    std::cout << "Conv" << std::endl;
     delete [] pad_input;
 
     *output = output_mat;
@@ -104,7 +103,7 @@ void maxPool2d(const float* input, const int in_channels, const int in_rows, con
         {
             for(int j = 0; j < in_cols; j++)
             {
-                pad_input[c*pad_size + (i+1) * pad_in_cols + 1 + j] = input[c*mat_size + i * in_cols + j];
+                pad_input[c*pad_size + (i+max_pools.pad) * pad_in_cols + max_pools.pad + j] = input[c*mat_size + i * in_cols + j];
             }
         }
     }
@@ -138,11 +137,32 @@ void maxPool2d(const float* input, const int in_channels, const int in_rows, con
             }
         }
     }
-
+    delete [] pad_input;
     *output = output_mat;
     std::cout <<output_mat[0] <<std::endl;
     std::cout << (*output)[0] <<std::endl;
     out_channel = in_channels;
     out_rows = output_rows;
     out_cols = output_cols;
+}
+
+
+void dense(const float* input, const int N, const fc_param& fc_params, float** output, int& M)
+{
+    
+    int rows = fc_params.in_features;   // 2048
+    int cols = fc_params.out_features;  // 2
+    float* output_mat = new float[cols]{};
+
+    for(int i = 0; i < cols; i++)
+    {
+        for(int j = 0; j < rows; j++)
+        {
+            output_mat[i] += fc_params.p_weight[i*rows + j] * input[j];
+        }
+        output_mat[i] += fc_params.p_bias[i];
+    }
+
+    *output = output_mat;
+    M = cols;
 }

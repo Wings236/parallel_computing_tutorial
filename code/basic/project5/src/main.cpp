@@ -89,24 +89,18 @@ int main(int argc, char* argv[])
     int Size = Layer_5_channels*Layer_5_rows*Layer_5_cols;
     dense(Layer_5_output, Size, fc_params[0], &finall, M);
 
-    double p1 = 1 / (1 + exp(finall[0] - finall[1]));
-    double p2 = 1 / (1 + exp(finall[1] - finall[2]));
+    double p0 = 1 / (1 + exp(finall[0] - finall[1]));
+    double p1 = 1 / (1 + exp(finall[1] - finall[0]));
+
+    std::cout << "face: " << p0 << " bg: " << p1 <<std::endl;
 
     // free
-    std::cout << 0 << std::endl;
     delete [] img_value;
-    std::cout << 1 << std::endl;
     delete [] Layer_1_output;
-    std::cout << 2 << std::endl;
     delete [] Layer_2_output;
-    std::cout << 3 << std::endl;
     delete [] Layer_3_output;
-    std::cout << 4 << std::endl;
     delete [] Layer_4_output;
-    std::cout << 5 << std::endl;
     delete [] Layer_5_output;
-    std::cout << 6 << std::endl;
     delete [] finall;
-    std::cout << 7 << std::endl;
     return 0;
 }

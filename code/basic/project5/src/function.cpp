@@ -61,8 +61,6 @@ void conv2d(const float* input, const int in_channels, const int in_rows, const 
     delete [] pad_input;
 
     *output = output_mat;
-    std::cout <<output_mat[0] <<std::endl;
-    std::cout << (*output)[0] <<std::endl;
     out_channels = output_channels;
     out_rows = output_rows;
     out_cols = output_cols;
@@ -139,8 +137,6 @@ void maxPool2d(const float* input, const int in_channels, const int in_rows, con
     }
     delete [] pad_input;
     *output = output_mat;
-    std::cout <<output_mat[0] <<std::endl;
-    std::cout << (*output)[0] <<std::endl;
     out_channel = in_channels;
     out_rows = output_rows;
     out_cols = output_cols;
@@ -149,7 +145,6 @@ void maxPool2d(const float* input, const int in_channels, const int in_rows, con
 
 void dense(const float* input, const int N, const fc_param& fc_params, float** output, int& M)
 {
-    
     int rows = fc_params.in_features;   // 2048
     int cols = fc_params.out_features;  // 2
     float* output_mat = new float[cols]{};
